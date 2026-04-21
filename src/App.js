@@ -11,7 +11,7 @@ function App() {
     setFile(e.target.files[0]);
   };
 
-  // f() para conectar con el backend
+  // Función para conectar con el backend
   const handleUpload = async () => {
     if (!file) {
       alert("Sube una imagen primero po'");
@@ -35,20 +35,40 @@ function App() {
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+    <div style={{ textAlign: 'center', marginTop: '50px', fontFamily: 'sans-serif' }}>
       <h1>VE ABSOLUTA - Detector de IA</h1>
       
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload} disabled={loading}>
-        {loading ? 'Analizando...' : 'Analizar Imagen'}
-      </button>
+      <div style={{ marginBottom: '20px' }}>
+        <input type="file" onChange={handleFileChange} />
+        <button 
+          onClick={handleUpload} 
+          disabled={loading}
+          style={{ padding: '8px 16px', cursor: loading ? 'wait' : 'pointer' }}
+        >
+          {loading ? 'Procesando en GPU...' : 'Analizar Imagen'}
+        </button>
+      </div>
 
       {/* Si hay resultado, lo mostramos abajo */}
       {result && (
-        <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-          <h3>Resultado del Análisis:</h3>
-          <p>Predicción: <strong>{result.prediction}</strong></p>
-          <p>Confianza: {Math.round(result.confidence * 100)}%</p>
+        <div style={{ 
+          marginTop: '20px', 
+          border: '1px solid #ccc', 
+          padding: '20px', 
+          display: 'inline-block',
+          textAlign: 'left',
+          borderRadius: '8px',
+          backgroundColor: '#f9f9f9'
+        }}>
+          <h3 style={{ marginTop: '0' }}>Resultado del Análisis:</h3>
+          <p>Predicción: <strong>{result.prediccion}</strong></p>
+          <p>Confianza: <strong>{Math.round(result.confianza * 100)}%</strong></p>
+          
+          <hr style={{ borderColor: '#ddd', margin: '15px 0' }} />
+          
+          <p style={{ fontSize: '0.8em', color: 'gray', margin: '0' }}>
+            Registro ID: #{result.id} | Archivo: {result.nombreArchivo}
+          </p>
         </div>
       )}
     </div>
