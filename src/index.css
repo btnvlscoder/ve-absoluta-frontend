@@ -1,13 +1,371 @@
-body {
+/* ── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── Variables ────────────────────────────────────────────────────────────── */
+:root {
+  --navy:        #0a2864;
+  --navy-light:  rgba(10, 40, 100, 0.07);
+  --navy-glow:   rgba(10, 40, 100, 0.35);
+  --bg:          #f4f5f0;
+  --card-bg:     #ffffff;
+  --border:      #d0d8e8;
+  --muted:       #b0bcd0;
+  --text:        #333333;
+  --icon-idle:   #888888;
+  --input-bg:    #fafbfd;
+  --selector-bg: #f0f3f8;
+  --radius-card: 16px;
+  --radius-sm:   10px;
+  --radius-tag:  99px;
+}
+
+/* ── Reset / Base ─────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  font-family: 'DM Mono', 'Courier New', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* ── Page wrapper ─────────────────────────────────────────────────────────── */
+.ve-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  position: relative;
+}
+
+/* ── Watermark ────────────────────────────────────────────────────────────── */
+.ve-watermark {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ve-watermark span {
+  position: absolute;
+  font-size: 11px;
+  font-family: 'DM Mono', 'Courier New', monospace;
+  color: rgba(10, 40, 100, 0.07);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  transform: rotate(-30deg);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* ── Browser window ───────────────────────────────────────────────────────── */
+.ve-browser {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  border-radius: var(--radius-card);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.13);
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
+}
+
+/* ── Browser chrome bar ───────────────────────────────────────────────────── */
+.ve-browser-bar {
+  background: #e8e8e8;
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+.ve-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.ve-dot--red    { background: #ff5f57; }
+.ve-dot--yellow { background: #ffbd2e; }
+.ve-dot--green  { background: #28ca41; }
+
+.ve-tab {
+  background: var(--card-bg);
+  border-radius: 6px 6px 0 0;
+  padding: 5px 16px;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  color: #555;
+  margin-left: 10px;
+}
+
+.ve-url-bar {
+  background: var(--card-bg);
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  color: #aaa;
+  flex: 1;
+  margin: 0 8px;
+}
+
+/* ── Card content ─────────────────────────────────────────────────────────── */
+.ve-card {
+  padding: 72px 36px 72px;
+}
+
+/* ── Logo ─────────────────────────────────────────────────────────────────── */
+.ve-logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.ve-subtitle {
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: #999;
+  text-transform: uppercase;
+  margin-bottom: 50px;
+}
+
+/* ── Media selector ───────────────────────────────────────────────────────── */
+.ve-selector {
+  background: var(--selector-bg);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 22px;
+  width: 200px;
+  margin: 0 auto 22px;
+}
+
+.ve-icon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  background: transparent;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.ve-icon-btn:hover {
+  background: rgba(10, 40, 100, 0.05);
+}
+
+.ve-icon-btn.active {
+  border-color: var(--navy);
+  background: var(--navy-light);
+}
+
+.ve-icon-btn span {
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.1em;
+  color: var(--icon-idle);
+  text-transform: uppercase;
+}
+
+.ve-icon-btn.active span {
+  color: var(--navy);
+}
+
+/* ── Input row ────────────────────────────────────────────────────────────── */
+.ve-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.ve-input-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Text input ───────────────────────────────────────────────────────────── */
+.ve-input {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--text);
+  background: var(--card-bg);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ve-input::placeholder {
+  color: var(--muted);
+}
+
+.ve-input:focus {
+  border-color: var(--navy);
+}
+
+/* ── Hidden real file input ───────────────────────────────────────────────── */
+input[type="file"] {
+  display: none;
+}
+
+/* ── File button ──────────────────────────────────────────────────────────── */
+.ve-file-btn {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  background: var(--input-bg);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.ve-file-btn:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.ve-file-btn.has-file {
+  color: var(--navy);
+  border-color: var(--navy);
+  border-style: solid;
+}
+
+/* ── Round send button ────────────────────────────────────────────────────── */
+.ve-send-btn {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: 50%;
+  background: var(--navy);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, opacity 0.15s;
+  box-shadow: 0 4px 14px var(--navy-glow);
+}
+
+.ve-send-btn:hover {
+  transform: scale(1.07);
+  opacity: 0.92;
+}
+
+.ve-send-btn:active {
+  transform: scale(0.96);
+}
+
+.ve-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Spinner ──────────────────────────────────────────────────────────────── */
+@keyframes ve-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ve-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: ve-spin 0.8s linear infinite;
+}
+
+/* ── Result card ──────────────────────────────────────────────────────────── */
+.ve-result {
+  margin-top: 20px;
+  padding: 18px 22px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--navy);
+  background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+}
+
+.ve-result__label {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: #999;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.ve-result__prediction {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.ve-result__bar-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.ve-result__bar-label,
+.ve-result__bar-value {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.ve-result__bar-label { color: #999; }
+.ve-result__bar-value { font-weight: 700; color: var(--navy); }
+
+.ve-result__bar-track {
+  height: 6px;
+  border-radius: var(--radius-tag);
+  background: #e0e7ff;
+  overflow: hidden;
+}
+
+.ve-result__bar-fill {
+  height: 100%;
+  border-radius: var(--radius-tag);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ve-result__bar-fill--ai   { background: linear-gradient(90deg, #0a2864, #3a6fd8); }
+.ve-result__bar-fill--real { background: linear-gradient(90deg, #166534, #22c55e); }
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.ve-footer {
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: rgba(10, 40, 100, 0.25);
+  text-transform: uppercase;
 }
