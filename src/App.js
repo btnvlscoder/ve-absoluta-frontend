@@ -23,8 +23,8 @@ function App() {
     formData.append('file', file); // El nombre 'file' debe ser igual al del Controller en Kotlin
 
     try {
-      // Mandamos la imagen al puerto 8080 que es donde corre nuestro Spring Boot
-      const response = await axios.post('http://localhost:8080/api/v1/deteccion/upload', formData);
+      // Mandamos la imagen a url render que es donde corre nuestro Spring Boot
+      const response = await axios.post('https://ve-absoluta-backend.onrender.com/api/v1/deteccion/upload', formData);
       setResult(response.data); // Guardamos la respuesta 
     } catch (error) {
       console.error("Algo falló en la subida:", error);
