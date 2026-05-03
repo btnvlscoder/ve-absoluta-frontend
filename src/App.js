@@ -24,7 +24,7 @@ function App() {
 
     try {
       // Mandamos la imagen a url render que es donde corre nuestro Spring Boot
-      const response = await axios.post('https://ve-absoluta-backend.onrender.com/api/v1/deteccion/upload', formData);
+      const response = await axios.post('https://ve-absoluta-backend.onrender.com/api/v1/analizar/upload', formData);
       setResult(response.data); // Guardamos la respuesta 
     } catch (error) {
       console.error("Algo falló en la subida:", error);
