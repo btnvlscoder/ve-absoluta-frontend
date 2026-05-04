@@ -41,15 +41,25 @@ function App() {
     } catch (error) {
       console.error("Algo falló en la subida:", error);
       
-      // Escuchamos el GlobalExceptionHandler de Kotlin
-      if (error.response && error.response.data && error.response.data.mensaje) {
-        // Si el backend nos mandó un error estructurado, lo mostramos
+      // 1. Si el servidor nos mandó un Error 413 (Payload Too Large) limpio
+      if (error.response && error.response.status === 413) {
+        alert(`🚨 Alerta Forense: La imagen es demasiado pesada (${(file.size / 1024 / 1024).toFixed(2)} MB). El límite actual del servidor es 1 MB.`);
+      } 
+      // 2. Si Tomcat dio un portazo tan fuerte que rompió el CORS (Axios tira Network Error)
+      else if (error.message === 'Network Error' && file.size > 1048576) { 
+        // 1048576 bytes = 1 MB (El límite actual de tu backend)
+        alert(`🚨 Alerta Forense: La imagen pesa ${(file.size / 1024 / 1024).toFixed(2)} MB y excede el límite del servidor. Por favor, sube una imagen más liviana.`);
+      }
+      // 3. Si el backend nos mandó tu JSON bonito de Kotlin
+      else if (error.response && error.response.data && error.response.data.mensaje) {
         alert(`🚨 Alerta Forense: ${error.response.data.mensaje}`);
-      } else if (error.request) {
-        // Si la petición salió pero el servidor nunca respondió (está apagado o cayó)
+      } 
+      // 4. Si realmente el servidor está apagado
+      else if (error.request) {
         alert("El motor principal no responde. Verifica que el backend esté encendido.");
-      } else {
-        // Error de configuración de Axios o red
+      } 
+      // 5. Cualquier otra cosa
+      else {
         alert("Error de red inesperado.");
       }
     } finally {
