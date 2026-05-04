@@ -15,8 +15,15 @@ function App() {
   // Función para conectar con el backend
   const handleUpload = async () => {
     if (!file) {
-      alert("Sube una imagen primero po'");
+      alert("Sube una imagen primero'");
       return;
+    }
+
+    // EL ESCUDO ANTI-CORS: Validación de tamaño en el Frontend
+    // 10 MB = 10 * 1024 * 1024 bytes = 10485760 bytes
+    if (file.size > 10485760) {
+      alert("🚨 Alerta Forense: El archivo excede el tamaño máximo permitido (10MB). Por favor, sube una imagen más liviana.");
+      return; // Cortamos la ejecución aquí, ¡el error nunca viaja al backend!
     }
 
     setLoading(true);
