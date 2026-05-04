@@ -27,12 +27,13 @@ function App() {
       const response = await axios.post('https://ve-absoluta-backend.onrender.com/api/v1/analizar/upload', formData);
       setResult(response.data); // Guardamos la respuesta 
     } catch (error) {
-      console.error("Algo falló en la subida:", error);
-      alert("Error al conectar con el servidor. Revisa si el backend está arriba.");
-    } finally {
-      setLoading(false);
+    if (error.response && error.response.data && error.response.data.mensaje) {
+        // Aquí mostraremos el error real de tu backend ("El archivo excede el tamaño máximo...")
+        alert(`Alerta Forense: ${error.response.data.mensaje}`); 
+    } else {
+        alert("Error de conexión con el motor principal.");
     }
-  };
+};
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px', fontFamily: 'sans-serif' }}>
