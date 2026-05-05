@@ -19,7 +19,7 @@ function App() {
       return;
     }
 
-    // EL ESCUDO ANTI-CORS: Validación de tamaño en el Frontend
+    // ESCUDO ANTI-CORS: Validación de tamaño en el Frontend
     // 10 MB = 10 * 1024 * 1024 bytes = 10485760 bytes
     if (file.size > 10485760) {
       alert("🚨 Alerta Forense: El archivo excede el tamaño máximo permitido (10MB). Por favor, sube una imagen más liviana.");
@@ -32,11 +32,12 @@ function App() {
 
     try {
       // Mandamos la imagen a url render que es donde corre nuestro Spring Boot
-      const response = await axios.post('https://ve-absoluta-backend.onrender.com/api/v1/analizar/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }
-      });
+    const response = await axios.post('https://ve-absoluta-backend.onrender.com/api/v1/analizar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    
       setResult(response.data); 
     } catch (error) {
       console.error("Algo falló en la subida:", error);
