@@ -1,199 +1,233 @@
-import { useState, useRef } from "react";
+import { useMemo, useState } from "react";
 import axios from "axios";
 import "./index.css";
 
-// ── Watermark background ──────────────────────────────────────────────────────
-const WatermarkBackground = () => {
-  const phrases = ["VE ABSOLUTA", "VE ABSOLUT", "LUTA", "VE ABSOLUTA", "VE ABSOLUT"];
-  const spans = [];
-  for (let row = 0; row < 18; row++) {
-    for (let col = 0; col < 6; col++) {
-      spans.push(
-        <span
-          key={`${row}-${col}`}
-          style={{ left: `${col * 18}%`, top: `${row * 5.5}%` }}
-        >
-          {phrases[col % phrases.length]}
-        </span>
-      );
-    }
-  }
-  return <div className="ve-watermark">{spans}</div>;
+const API_BASE_URL = process.env.REACT_APP_AI_API_URL || "http://localhost:8000";
+const ENDPOINT_ADVANCED = `${API_BASE_URL}/api/v1/analyze-advanced`;
+const ENDPOINT_ADVANCED_FILE = `${API_BASE_URL}/api/v1/analyze-advanced-file`;
+
+const heatColor = (value) => {
+  const v = Math.max(0, Math.min(1, value));
+  const hue = (1 - v) * 120; // Verde -> Rojo
+  return `hsl(${hue}, 82%, 45%)`;
 };
 
-// ── SVG Icons ─────────────────────────────────────────────────────────────────
-const ImageIcon = ({ active }) => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke={active ? "#0a2864" : "#888"} strokeWidth="1.8"
-    strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="18" height="18" rx="2" />
-    <circle cx="8.5" cy="8.5" r="1.5" />
-    <polyline points="21 15 16 10 5 21" />
-  </svg>
-);
+const formatMetricLabel = (key) =>
+  key
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 
-const TextIcon = ({ active }) => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke={active ? "#0a2864" : "#888"} strokeWidth="1.8"
-    strokeLinecap="round" strokeLinejoin="round">
-    <text x="3" y="18" fontSize="14" fontWeight="700" fontFamily="serif"
-      fill={active ? "#0a2864" : "#888"} stroke="none">T</text>
-    <polyline points="14 8 18 12 14 16" />
-    <polyline points="18 8 22 12 18 16" />
-  </svg>
-);
-
-const VideoIcon = ({ active }) => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-    stroke={active ? "#0a2864" : "#888"} strokeWidth="1.8"
-    strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="23 7 16 12 23 17 23 7" />
-    <rect x="1" y="5" width="15" height="14" rx="2" />
-  </svg>
-);
-
-// ── VE Logo ───────────────────────────────────────────────────────────────────
-const VELogo = () => (
-  <svg width="64" height="48" viewBox="0 0 64 48" fill="none">
-    <text x="0" y="40" fontSize="46" fontWeight="900"
-      fontFamily="'Georgia', serif" fill="#0a2864" letterSpacing="-8">VE</text>
-    <rect x="0" y="44" width="64" height="2.5" fill="#0a2864" rx="1" />
-  </svg>
-);
-
-// ── Result Card ───────────────────────────────────────────────────────────────
-const ResultCard = ({ result }) => {
-  const pct = Math.round(result.confidence * 100);
-  const isAI =
-    result.prediction?.toLowerCase().includes("ia") ||
-    result.prediction?.toLowerCase().includes("ai");
+const DashboardCards = ({ result }) => {
+  const score = Math.round(result?.score_global ?? 0);
+  const metricas = result?.metricas ?? {};
+  const pieStyle = {
+    background: `conic-gradient(#0a2864 ${score * 3.6}deg, #dde6f8 0deg)`,
+  };
+  const topMetrics = Object.entries(metricas)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
 
   return (
-    <div className="ve-result">
-      <p className="ve-result__label">Resultado del Análisis</p>
-      <p className="ve-result__prediction">{result.prediction}</p>
-      <div className="ve-result__bar-header">
-        <span className="ve-result__bar-label">CONFIANZA</span>
-        <span className="ve-result__bar-value">{pct}%</span>
-      </div>
-      <div className="ve-result__bar-track">
-        <div
-          className={`ve-result__bar-fill ${isAI ? "ve-result__bar-fill--ai" : "ve-result__bar-fill--real"}`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
+    <div className="ve-grid">
+      <article className="ve-panel ve-panel--score">
+        <p className="ve-kicker">Score Global</p>
+        <p className="ve-score-value">{score}%</p>
+        <p className="ve-muted">{result.label}</p>
+      </article>
+
+      <article className="ve-panel ve-panel--status">
+        <p className="ve-kicker">Estado</p>
+        <p className="ve-title">{score >= 70 ? "Alerta critica" : score >= 45 ? "Revision sugerida" : "Estado estable"}</p>
+        <p className="ve-muted">{result.explicacion}</p>
+      </article>
+
+      <article className="ve-panel ve-panel--pie">
+        <p className="ve-kicker">Distribucion</p>
+        <div className="ve-pie" style={pieStyle}>
+          <div className="ve-pie__center">{score}%</div>
+        </div>
+      </article>
+
+      <article className="ve-panel ve-panel--metrics">
+        <p className="ve-kicker">Top Anomalias</p>
+        <div className="ve-metric-list">
+          {topMetrics.map(([k, v]) => (
+            <div className="ve-metric-row" key={k}>
+              <span>{formatMetricLabel(k)}</span>
+              <strong>{Math.round(v * 100)}%</strong>
+            </div>
+          ))}
+        </div>
+      </article>
     </div>
   );
 };
 
-// ── Main App ──────────────────────────────────────────────────────────────────
+const HeatmapPreview = ({ heatmap }) => {
+  if (!heatmap?.length) return null;
+  return (
+    <article className="ve-panel">
+      <p className="ve-kicker">Vista de Calor</p>
+      <div
+        className="ve-heatmap"
+        style={{ gridTemplateColumns: `repeat(${heatmap[0].length}, 1fr)` }}
+      >
+        {heatmap.flatMap((row, rowIndex) =>
+          row.map((value, colIndex) => (
+            <span
+              key={`${rowIndex}-${colIndex}`}
+              style={{ backgroundColor: heatColor(value) }}
+            />
+          ))
+        )}
+      </div>
+    </article>
+  );
+};
+
 export default function App() {
-  const [mediaType, setMediaType] = useState("image");
-  const [file, setFile]           = useState(null);
-  const [result, setResult]       = useState(null);
-  const [loading, setLoading]     = useState(false);
-  const fileRef = useRef(null);
+  const [inputMode, setInputMode] = useState("url");
+  const [imageUrl, setImageUrl] = useState(
+    "https://png.pngtree.com/thumb_back/fh260/background/20210908/pngtree-beach-coast-evening-sunset-hd-real-shots-image_830506.jpg"
+  );
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleFileChange = (e) => setFile(e.target.files[0] || null);
+  const activity = useMemo(() => {
+    if (!result?.metricas) return [];
+    return Object.entries(result.metricas).map(([key, val]) => ({
+      key,
+      value: Math.round(val * 100),
+    }));
+  }, [result]);
 
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Sube una imagen primero po'");
-      return;
-    }
-
+  const handleAnalyze = async () => {
     setLoading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-
+    setError("");
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/deteccion/upload",
-        formData
-      );
+      let response;
+      if (inputMode === "url") {
+        if (!imageUrl.trim()) {
+          setError("Debes ingresar una URL publica de imagen.");
+          setLoading(false);
+          return;
+        }
+        response = await axios.post(ENDPOINT_ADVANCED, { url: imageUrl });
+      } else {
+        if (!selectedFile) {
+          setError("Debes seleccionar una imagen para subir.");
+          setLoading(false);
+          return;
+        }
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        response = await axios.post(ENDPOINT_ADVANCED_FILE, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
       setResult(response.data);
-    } catch (error) {
-      console.error("Algo falló en la subida:", error);
-      alert("Error al conectar con el servidor. Revisa si el backend está arriba.");
+    } catch (err) {
+      const detail = err?.response?.data?.detail;
+      setError(detail || "No se pudo analizar la imagen.");
+      setResult(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const iconTypes = [
-    { id: "image", Icon: ImageIcon, label: "Imagen"  }
-  ];
-
   return (
-    <div className="ve-page">
-      <WatermarkBackground />
+    <div className="ve-dashboard-page">
+      <aside className="ve-sidebar">
+        <div className="ve-avatar">M</div>
+        <h2>Miguel</h2>
+        <p>Panel de Analisis IA</p>
+        <nav>
+          <a className="active" href="#inicio">Inicio</a>
+          <a href="#score">Score Global</a>
+          <a href="#resultado">Resultado</a>
+          <a href="#heatmap">Evidencia Visual</a>
+          <a href="#actividad">Actividad Reciente</a>
+        </nav>
+      </aside>
 
-      {/* Browser window */}
-      <div className="ve-browser">
-        {/* Card */}
-        <div className="ve-card">
-
-          {/* Logo */}
-          <div className="ve-logo-wrap">
-            <VELogo />
+      <main className="ve-main">
+        <header className="ve-header">
+          <div>
+            <h1>Dashboard VE Absoluta</h1>
+            <p>Analisis estadistico en tiempo real con endpoint avanzado</p>
           </div>
-          <p className="ve-subtitle">Detector de Contenido IA</p>
+          <span className="ve-chip">{result?.status || "idle"}</span>
+        </header>
 
-          {/* Media type selector */}
-          <div className="ve-selector">
-            <div className="ve-icon-btn active">
-              <ImageIcon active={true} />
-              <span>Imagen</span>
-            </div>
-          </div>
-
-          {/* Input row */}
-          <div className="ve-input-row">
-            <div className="ve-input-col">
-
-              {/* Hidden file input */}
-              <input
-                type="file"
-                ref={fileRef}
-                onChange={handleFileChange}
-                accept="image/*,video/*"
-              />
-
-              <button
-                className={`ve-file-btn${file ? " has-file" : ""}`}
-                onClick={() => fileRef.current?.click()}
-              >
-                {file ? `📎 ${file.name}` : "INSERTE ARCHIVO"}
-              </button>
-            </div>
-
-            {/* Round send button */}
+        <section className="ve-panel ve-input-panel">
+          <label>Fuente de imagen</label>
+          <div className="ve-mode-toggle">
             <button
-              className="ve-send-btn"
-              onClick={handleUpload}
-              disabled={loading}
-              title="Analizar"
+              className={inputMode === "url" ? "active" : ""}
+              onClick={() => setInputMode("url")}
+              type="button"
             >
-              {loading ? (
-                <div className="ve-spinner" />
-              ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                  stroke="#fff" strokeWidth="2.2"
-                  strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13" />
-                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                </svg>
-              )}
+              URL
+            </button>
+            <button
+              className={inputMode === "file" ? "active" : ""}
+              onClick={() => setInputMode("file")}
+              type="button"
+            >
+              Upload File
             </button>
           </div>
+          <div className="ve-input-row">
+            {inputMode === "url" ? (
+              <input
+                id="image-url"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="https://..."
+              />
+            ) : (
+              <label className="ve-file-upload">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                />
+                {selectedFile ? selectedFile.name : "Seleccionar imagen local"}
+              </label>
+            )}
+            <button onClick={handleAnalyze} disabled={loading} type="button">
+              {loading ? "Analizando..." : "Analizar"}
+            </button>
+          </div>
+          {error && <p className="ve-error">{error}</p>}
+        </section>
 
-          {/* Result */}
-          {result && <ResultCard result={result} />}
+        {result && (
+          <>
+            <section id="score">
+              <DashboardCards result={result} />
+            </section>
 
-        </div>
-      </div>
+            <section id="heatmap">
+              <HeatmapPreview heatmap={result.heatmap_raw} />
+            </section>
 
-      <p className="ve-footer">VE ABSOLUTA © 2025</p>
+            <section id="actividad" className="ve-panel">
+              <p className="ve-kicker">Actividad Reciente</p>
+              <div className="ve-activity-grid">
+                {activity.map((item) => (
+                  <div key={item.key} className="ve-activity-item">
+                    <span>{formatMetricLabel(item.key)}</span>
+                    <strong>{item.value}%</strong>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
+      </main>
     </div>
   );
 }
