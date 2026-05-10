@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function App() {
   const [file, setFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null); // Nuevo estado para ver la foto original
+  const [imagePreview, setImagePreview] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -11,7 +11,6 @@ function App() {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      // Creamos una URL temporal para mostrar la imagen en el panel antes de subirla
       setImagePreview(URL.createObjectURL(selectedFile));
       setResult(null); 
     }
@@ -104,11 +103,12 @@ function App() {
             
             {/* Título de Resultados */}
             <div style={{ padding: '20px', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ margin: 0, color: '#e2e8f0' }}>Reporte de Evidencia</h2>
+              <h2 style={{ margin: 0, color: '#e2e8f0' }}>Reporte de Evidencia Forense</h2>
               <div style={{ textAlign: 'right' }}>
                 <span style={{ fontSize: '0.9rem', color: '#94a3b8' }}>Nivel de Certeza</span>
                 <div style={{ fontSize: '1.8rem', fontWeight: '900', color: isFake ? '#ef4444' : '#22c55e' }}>
-                  {Math.round(confianzaFinal * 100)}% - {prediccionFinal}
+                  {/* SOLUCIÓN AL BUG DEL % */}
+                  {Math.round(confianzaFinal > 1 ? confianzaFinal : confianzaFinal * 100)}% - {prediccionFinal}
                 </div>
               </div>
             </div>
@@ -136,18 +136,24 @@ function App() {
               </div>
             </div>
 
-            {/* Metadatos (JSON antiguo) o Desglose Pericial (JSON nuevo) */}
+            {/* Desglose Pericial (JSON nuevo humanizado) */}
             <div style={{ padding: '20px' }}>
               {result.desglose_pericial ? (
-                // Vista del Nuevo Súper JSON
                 <div>
-                  <h4 style={{ color: '#38bdf8', borderBottom: '1px solid #334155', paddingBottom: '10px' }}>Análisis Detallado</h4>
-                  <p style={{ margin: '10px 0', color: '#cbd5e1' }}><strong>ViT:</strong> {result.desglose_pericial.analisis_ia_vit?.detalle}</p>
-                  <p style={{ margin: '10px 0', color: '#cbd5e1' }}><strong>ELA:</strong> {result.desglose_pericial.analisis_ela?.detalle}</p>
+                  <h4 style={{ color: '#38bdf8', borderBottom: '1px solid #334155', paddingBottom: '10px' }}>Análisis Técnico Detallado</h4>
+                  
+                  <div style={{ margin: '15px 0', padding: '15px', backgroundColor: '#0f172a', borderRadius: '8px', borderLeft: `4px solid ${result.desglose_pericial.analisis_ia_vit?.estado === 'CRÍTICO' ? '#ef4444' : '#22c55e'}` }}>
+                    <p style={{ margin: '0 0 5px 0', color: '#e2e8f0', fontWeight: 'bold' }}>🔍 Análisis de Coherencia Visual (IA)</p>
+                    <p style={{ margin: 0, color: '#94a3b8', lineHeight: '1.5' }}>{result.desglose_pericial.analisis_ia_vit?.detalle}</p>
+                  </div>
+
+                  <div style={{ margin: '15px 0', padding: '15px', backgroundColor: '#0f172a', borderRadius: '8px', borderLeft: `4px solid ${result.desglose_pericial.analisis_ela?.estado === 'ADVERTENCIA' ? '#eab308' : '#22c55e'}` }}>
+                    <p style={{ margin: '0 0 5px 0', color: '#e2e8f0', fontWeight: 'bold' }}>💾 Auditoría de Integridad del Archivo (ELA)</p>
+                    <p style={{ margin: 0, color: '#94a3b8', lineHeight: '1.5' }}>{result.desglose_pericial.analisis_ela?.detalle}</p>
+                  </div>
                 </div>
               ) : (
-                // Vista del JSON antiguo (para que no se rompa mientras actualizas Spring Boot)
-                <div style={{ color: '#64748b', fontSize: '0.9rem' }}>
+                <div style={{ color: '#64748b', fontSize: '0.9rem', textAlign: 'center' }}>
                   Registro ID: #{result.id} | Archivo Procesado: {result.nombreArchivo}
                 </div>
               )}
