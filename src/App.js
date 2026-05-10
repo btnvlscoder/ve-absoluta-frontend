@@ -130,7 +130,7 @@ function App() {
                   {result.heatmap_base64 ? (
                     <img src={result.heatmap_base64} alt="Heatmap" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                   ) : (
-                    <span style={{ color: '#475569' }}>{result.heatmap_base64 === undefined ? 'Heatmap no disponible en la API actual' : 'Generando...'}</span>
+                    <span style={{ color: '#475569' }}>{result.heatmap_base64 === undefined ? 'Heatmap no disponible en la API actual.' : 'Generando...'}</span>
                   )}
                 </div>
               </div>
