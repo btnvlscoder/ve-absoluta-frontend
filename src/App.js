@@ -41,7 +41,7 @@ function App() {
     } catch (error) {
       console.error("Algo falló en la subida:", error);
       if (error.response && error.response.status === 413) {
-        alert(`🚨 Alerta Forense: La imagen es demasiado pesada (${(file.size / 1024 / 1024).toFixed(2)} MB). Límite: 1 MB.`);
+        alert(`🚨 Alerta Forense: La imagen es muy pesada (${(file.size / 1024 / 1024).toFixed(2)} MB). Límite: 1 MB.`);
       } else if (error.message === 'Network Error' && file.size > 1048576) { 
         alert(`🚨 Alerta Forense: La imagen pesa ${(file.size / 1024 / 1024).toFixed(2)} MB y excede el límite del servidor.`);
       } else if (error.response && error.response.data && error.response.data.mensaje) {
