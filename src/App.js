@@ -125,7 +125,7 @@ function App() {
 
               {/* Mapa de Calor ViT */}
               <div style={{ flex: 1, backgroundColor: '#1e293b', padding: '15px', borderRadius: '8px', border: '1px solid #334155' }}>
-                <h3 style={{ textAlign: 'center', margin: '0 0 15px 0', color: '#22d3ee', fontSize: '1rem' }}>Mapa de Atención (Heatmap)</h3>
+                <h3 style={{ textAlign: 'center', margin: '0 0 15px 0', color: '#22d3ee', fontSize: '1rem' }}>Evidencia con superposicion de "attention-map" (Mapa de calor)</h3>
                 <div style={{ height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f172a', borderRadius: '6px' }}>
                   {result.heatmap_base64 ? (
                     <img src={result.heatmap_base64} alt="Heatmap" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
