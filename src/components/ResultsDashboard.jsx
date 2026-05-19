@@ -42,7 +42,7 @@ const ResultsDashboard = ({ result, imagePreview }) => {
         <ForensicRadarChart metricas={result.metadata?.metricas_heuristicas} />
       </div>
       
-      {/* JUSTIFICACIÓN PERICIAL DETALLADA */}
+      {/* 🚀 JUSTIFICACIÓN PERICIAL DETALLADA */}
       {/* Aquí inyectamos el peritaje técnico debajo del gráfico */}
       <ForensicJustification desglose={result.desglose_pericial} />
 
