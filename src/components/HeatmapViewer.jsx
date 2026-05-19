@@ -43,12 +43,6 @@ const HeatmapViewer = ({ result }) => {
           <span className="heatmap-loading">Cargando capas visuales...</span>
         )}
       </div>
-
-      {/* 🚀 EL DETALLE EXACTO DEL PERITAJE */}
-      <div className="forensic-context">
-        <h4 className="context-title">{forensicContext[vista].titulo}</h4>
-        <p className="context-text">{forensicContext[vista].justificacion}</p>
-      </div>
     </div>
   );
 };
