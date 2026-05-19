@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './index.css'; 
-import ForensicRadarChart from './components/ForensicRadarChart';
 import Header from './components/Header';
 import ControlPanel from './components/ControlPanel';
-import HeatmapViewer from './components/HeatmapViewer';
-import TechnicalBreakdown from './components/TechnicalBreakdown';
+import ResultsDashboard from './components/ResultsDashboard';
 
 function App() {
   const [file, setFile] = useState(null);
@@ -24,7 +22,7 @@ function App() {
 
   const handleUpload = async () => {
     if (!file) return alert("Sube una imagen primero");
-    if (file.size > 10485760) return alert("🚨 Alerta Forense: El archivo excede el tamaño máximo permitido (10MB).");
+    if (file.size > 10485760) return alert("Alerta Forense: El archivo excede el tamaño máximo permitido (10MB).");
 
     setLoading(true);
     const formData = new FormData();
@@ -38,11 +36,11 @@ function App() {
     } catch (error) {
       console.error("Algo falló en la subida:", error);
       if (error.response && error.response.status === 413) {
-        alert(`🚨 Alerta Forense: La imagen es demasiado pesada (${(file.size / 1024 / 1024).toFixed(2)} MB). Límite: 1 MB.`);
+        alert(`Alerta Forense: La imagen es demasiado pesada (${(file.size / 1024 / 1024).toFixed(2)} MB). Límite: 1 MB.`);
       } else if (error.message === 'Network Error' && file.size > 1048576) { 
-        alert(`🚨 Alerta Forense: La imagen pesa ${(file.size / 1024 / 1024).toFixed(2)} MB y excede el límite del servidor.`);
-      } else if (error.response && error.response.data && error.response.data.mensaje) {
-        alert(`🚨 Alerta Forense: ${error.response.data.mensaje}`);
+        alert(`Alerta Forense: La imagen pesa ${(file.size / 1024 / 1024).toFixed(2)} MB y excede el límite del servidor.`);
+      } else if (error.response?.data?.mensaje) {
+        alert(`Alerta Forense: ${error.response.data.mensaje}`);
       } else if (error.request) {
         alert("El motor principal no responde. Verifica que el backend esté encendido.");
       } else {
@@ -52,11 +50,6 @@ function App() {
       setLoading(false);
     }
   };
-
-  const prediccionFinal = result?.veredicto_final || result?.prediccion;
-  const confianzaFinal = result?.confianza_global || result?.confianza;
-  const isFake = prediccionFinal === 'FAKE';
-  const certezaValor = Math.round(confianzaFinal > 1 ? confianzaFinal : confianzaFinal * 100);
 
   return (
     <div className="app-container">
@@ -70,38 +63,14 @@ function App() {
           loading={loading} 
         />
 
+        {/* El orquestador visual toma el control aquí */}
         {result && (
-          <div className="results-dashboard">
-            
-            <div className="results-header">
-              <h2 className="results-title">Reporte de Evidencia Forense</h2>
-              <div style={{ textAlign: 'right' }}>
-                <span className="certeza-label">Nivel de Certeza</span>
-                <div className={`certeza-value ${isFake ? 'text-fake' : 'text-real'}`}>
-                  {certezaValor}% - {prediccionFinal}
-                </div>
-              </div>
-            </div>
-
-            <div className="images-container">
-              <div className="original-image-box">
-                <h3 className="original-title">Evidencia Recibida</h3>
-                <div className="original-wrapper">
-                  {imagePreview && <img src={imagePreview} alt="Original" className="original-img" />}
-                </div>
-              </div>
-
-              <HeatmapViewer result={result} />
-            </div>
-
-            <div style={{ padding: '0 20px' }}>
-              <ForensicRadarChart metricas={result.metadata?.metricas_heuristicas} />
-            </div>
-            
-            <TechnicalBreakdown desglose={result.desglose_pericial} id={result.id} nombreArchivo={result.nombreArchivo} />
-            
-          </div>
+          <ResultsDashboard 
+            result={result} 
+            imagePreview={imagePreview} 
+          />
         )}
+        
       </div>
     </div>
   );
