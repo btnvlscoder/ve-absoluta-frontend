@@ -75,3 +75,9 @@
 .radar-section {
   padding: 0 20px;
 }
+
+@media (max-width: 768px) {
+  .images-container {
+    flex-direction: column;
+  }
+}

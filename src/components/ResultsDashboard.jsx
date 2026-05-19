@@ -3,9 +3,9 @@ import './ResultsDashboard.css';
 import HeatmapViewer from './HeatmapViewer';
 import ForensicRadarChart from './ForensicRadarChart';
 import TechnicalBreakdown from './TechnicalBreakdown';
+import ForensicJustification from './ForensicJustification'; // 1. Importa el componente
 
 const ResultsDashboard = ({ result, imagePreview }) => {
-  // Calculamos las variables aquí adentro para no ensuciar el App.js
   const prediccionFinal = result?.veredicto_final || result?.prediccion;
   const confianzaFinal = result?.confianza_global || result?.confianza;
   const isFake = prediccionFinal === 'FAKE';
@@ -42,7 +42,11 @@ const ResultsDashboard = ({ result, imagePreview }) => {
         <ForensicRadarChart metricas={result.metadata?.metricas_heuristicas} />
       </div>
       
-      {/* Desglose Pericial en Texto */}
+      {/* JUSTIFICACIÓN PERICIAL DETALLADA */}
+      {/* Aquí inyectamos el peritaje técnico debajo del gráfico */}
+      <ForensicJustification desglose={result.desglose_pericial} />
+
+      {/* Desglose Pericial en Texto (Opcional: puedes dejarlo o integrarlo en la justificación) */}
       <TechnicalBreakdown 
         desglose={result.desglose_pericial} 
         id={result.id} 
