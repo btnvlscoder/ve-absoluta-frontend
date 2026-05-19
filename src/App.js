@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './index.css'; 
-
+import ForensicRadarChart from './components/ForensicRadarChart';
 import Header from './components/Header';
 import ControlPanel from './components/ControlPanel';
 import HeatmapViewer from './components/HeatmapViewer';
@@ -94,6 +94,10 @@ function App() {
               <HeatmapViewer result={result} />
             </div>
 
+            <div style={{ padding: '0 20px' }}>
+              <ForensicRadarChart metricas={result.metadata?.metricas_heuristicas} />
+            </div>
+            
             <TechnicalBreakdown desglose={result.desglose_pericial} id={result.id} nombreArchivo={result.nombreArchivo} />
             
           </div>
