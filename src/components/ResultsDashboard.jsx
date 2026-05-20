@@ -10,7 +10,17 @@ const ResultsDashboard = ({ result, imagePreview }) => {
   }
 
   return (
-    <div className="results-dashboard">
+    <div className="results-dashboard">\
+      {/* 1. SECCIÓN DE CABECERA Y VEREDICTO*/}
+      <div className="dashboard-header">
+        <h2 className="dashboard-title">Reporte de Evidencia Forense</h2>
+        <div className="veredicto-badge">
+          <span>Nivel de Certeza</span>
+          <span className={`certeza ${result.veredicto_final === 'REAL' ? 'seguro' : 'critico'}`}>
+            {result.confianza_global}% - {result.veredicto_final}
+          </span>
+        </div>
+      </div>
       
       {/* 2. IMAGEN ORIGINAL (Lado a Lado) */}
       <div className="images-container">
