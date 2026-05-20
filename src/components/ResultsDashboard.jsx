@@ -19,12 +19,6 @@ const ResultsDashboard = ({ result, imagePreview }) => {
         <ForensicRadarChart metricas={result.metadata?.metricas_heuristicas} />
       </div>
       
-      {/* Todo el texto viene del backend, nosotros solo lo pintamos */}
-      <PeritajeReport 
-        desglose={result.desglose_pericial} 
-        id={result.id} 
-        nombreArchivo={result.nombreArchivo} 
-      />
     </div>
   );
 };
