@@ -3,46 +3,46 @@ import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Responsi
 import './ForensicRadarChart.css';
 
 const ForensicRadarChart = ({ metricas }) => {
-  // Fallback de seguridad en caso de que la API tarde en responder o falle
-  const data = metricas || [
-    { parametro: 'Patrón de Ruido', valor: 0.89, fullMark: 1 },
-    { parametro: 'Frecuencia Fourier', valor: 0.81, fullMark: 1 },
-    { parametro: 'Artefactos Compresión', valor: 0.0, fullMark: 1 },
-    { parametro: 'Entropía Local', valor: 0.84, fullMark: 1 },
-    { parametro: 'Correlación Píxeles', valor: 0.10, fullMark: 1 },
-    { parametro: 'Distribución Color', valor: 0.87, fullMark: 1 },
-  ];
+  // 1. Si no hay métricas, devolvemos null o un mensaje.
+  if (!metricas || metricas.length === 0) {
+    return <div className="radar-placeholder">Esperando telemetría forense...</div>;
+  }
+
+  // 2. Interpretación dinámica (La que definimos hace un rato)
+  const interpretarRadar = (data) => {
+    const esSospechoso = data.some(m => m.valor > 0.65);
+    return esSospechoso 
+      ? "El análisis detectó irregularidades en la estructura de píxeles. Estas anomalías son consistentes con procesos de manipulación digital."
+      : "La integridad matemática de la imagen es óptima. Los valores se encuentran dentro de los rangos estadísticos de una fotografía natural.";
+  };
 
   return (
     <div className="radar-container">
-      <h3 className="radar-title">
-        Análisis de Señales Forenses (Motor Heurístico)
-      </h3>
+      <h3 className="radar-title">Análisis de Integridad Matemática</h3>
       
       <div className="radar-wrapper">
-        <ResponsiveContainer width="100%" height={320}>
-          <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
+        <ResponsiveContainer width="100%" height={300}>
+          <RadarChart cx="50%" cy="50%" outerRadius="70%" data={metricas}>
             <PolarGrid stroke="#475569" />
-            <PolarAngleAxis dataKey="parametro" tick={{ fill: '#cbd5e1', fontSize: 12 }} />
+            <PolarAngleAxis dataKey="parametro" tick={{ fill: '#cbd5e1', fontSize: 11 }} />
             <PolarRadiusAxis angle={30} domain={[0, 1]} tick={false} axisLine={false} />
             <Radar 
-              name="Anomalía Física" 
+              name="Firma Digital" 
               dataKey="valor" 
-              stroke="#f59e0b" 
+              stroke="#38bdf8" 
               strokeWidth={2} 
-              fill="#f59e0b" 
+              fill="#38bdf8" 
               fillOpacity={0.4} 
             />
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#0f172a', 
-                border: '1px solid #334155', 
-                borderRadius: '8px', 
-                color: '#e2e8f0' 
-              }} 
-            />
+            <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }} />
           </RadarChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* 3. DIAGNÓSTICO INTELIGENTE */}
+      <div className="radar-interpretation">
+        <h4>Diagnóstico de Integridad</h4>
+        <p>{interpretarRadar(metricas)}</p>
       </div>
     </div>
   );

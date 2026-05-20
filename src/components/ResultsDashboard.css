@@ -141,3 +141,28 @@
   margin: 0;
   text-align: justify;
 }
+/* =========================================
+   3. RADAR DE INTERPRETACIÓN 
+   ========================================= */
+
+.radar-interpretation {
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(56, 189, 248, 0.05); /* Azul muy tenue */
+  border-left: 4px solid #38bdf8;
+  border-radius: 4px;
+}
+
+.radar-interpretation h4 {
+  color: #38bdf8;
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.radar-interpretation p {
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin: 0;
+}
