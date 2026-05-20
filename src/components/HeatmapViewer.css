@@ -1,5 +1,5 @@
 .heatmap-container {
-  flex: 1; 
+  flex: 1;
   background-color: #1e293b;
   padding: 15px;
   border-radius: 8px;
@@ -8,31 +8,64 @@
   flex-direction: column;
 }
 
+.heatmap-title {
+  text-align: center;
+  margin: 0 0 10px 0;
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* Contenedor de botones estético y compacto */
+.controls-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Estilo para los botones */
+.layer-btn {
+  background-color: #0f172a;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.layer-btn:hover {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+.layer-btn.active {
+  background-color: #0ea5e9;
+  color: #ffffff;
+  border-color: #0ea5e9;
+}
+
+/* El wrapper de la imagen forzado a compartir altura */
 .heatmap-wrapper {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px; 
-  margin-bottom: 10px;
+  background-color: #0f172a;
+  border-radius: 6px;
+  min-height: 250px;
+  overflow: hidden;
 }
 
 .heatmap-img {
+  max-height: 100%;
   max-width: 100%;
-  max-height: 250px; 
   object-fit: contain;
 }
 
-.forensic-context {
-  margin-top: auto; 
-  padding: 12px;
-  background-color: #0f172a;
-  border-left: 3px solid #f59e0b;
-  font-size: 0.85rem; 
-}
-
-.context-title {
-  margin: 0 0 5px 0;
-  color: #f59e0b;
+.heatmap-loading {
+  color: #64748b;
   font-size: 0.9rem;
 }
