@@ -1,40 +1,42 @@
-// ResultsDashboard.jsx (Restaurado y Limpio)
 import React from 'react';
 import './ResultsDashboard.css';
 import HeatmapViewer from './HeatmapViewer';
 import ForensicRadarChart from './ForensicRadarChart';
-import PeritajeReport from './PeritajeReport'; 
 
 const ResultsDashboard = ({ result, imagePreview }) => {
+  // Verificación de seguridad básica
+  if (!result || !result.desglose_pericial) return null;
+
   return (
     <div className="results-dashboard">
       
-      {/* Contenedor de Imágenes (Lado a Lado) */}
       <div className="images-container">
-        
-        {/* Aquí restauramos la Evidencia Recibida */}
+        {/* Imagen Original */}
         <div className="original-image-box">
-          <h3 className="original-title">Evidencia Recibida</h3>
-          <div className="original-wrapper">
-            {imagePreview && <img src={imagePreview} alt="Original" className="original-img" />}
-          </div>
+          <h3>Evidencia Recibida</h3>
+          {imagePreview && <img src={imagePreview} alt="Original" />}
         </div>
-
-        {/* Aquí el Heatmap */}
+        
+        {/* Heatmap */}
         <HeatmapViewer result={result} />
       </div>
 
-      {/* Gráfico de Araña */}
       <div className="radar-section">
         <ForensicRadarChart metricas={result.metadata?.metricas_heuristicas} />
       </div>
       
-      {/* Reporte Único (Sin duplicados) */}
-      <PeritajeReport 
-        desglose={result.desglose_pericial} 
-        id={result.id} 
-        nombreArchivo={result.nombreArchivo} 
-      />
+
+      <div className="peritaje-directo">
+        <h3>Dictamen Pericial</h3>
+        <div className="analisis-box">
+          <h4>Inteligencia Artificial (ViT)</h4>
+          <p>{result.desglose_pericial.analisis_ia_vit.detalle}</p>
+        </div>
+        <div className="analisis-box">
+          <h4>Integridad Digital (ELA)</h4>
+          <p>{result.desglose_pericial.analisis_ela.detalle}</p>
+        </div>
+      </div>
       
     </div>
   );
