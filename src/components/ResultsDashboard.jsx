@@ -3,7 +3,6 @@ import React from 'react';
 import './ResultsDashboard.css';
 import HeatmapViewer from './HeatmapViewer';
 import ForensicRadarChart from './ForensicRadarChart';
-import PeritajeReport from './PeritajeReport'; 
 
 const ResultsDashboard = ({ result, imagePreview }) => {
   return (
