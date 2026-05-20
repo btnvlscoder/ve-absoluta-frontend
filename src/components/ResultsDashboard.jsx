@@ -31,24 +31,20 @@ const ResultsDashboard = ({ result, imagePreview }) => {
         <ForensicRadarChart metricas={result.metadata?.metricas_heuristicas} />
       </div>
       
-      {/* 3. DETALLE DIRECTO (Backend manda, Frontend solo muestra) */}
+      {/* 3. DETALLE DIRECTO DESDE EL BACKEND*/}
       <div className="peritaje-directo">
-        <h3>Dictamen Pericial</h3>
-        
-        {/* Verificamos si desglose_pericial existe para no romper el render */}
-        {result.desglose_pericial ? (
-          <>
+        <h3 className="peritaje-titulo">Dictamen Pericial Detallado</h3>
+        {result.desglose_pericial && (
+          <div className="peritaje-grid"> 
             <div className="analisis-box">
               <h4>Inteligencia Artificial (ViT)</h4>
-              <p>{result.desglose_pericial.analisis_ia_vit?.detalle || "Sin detalle IA"}</p>
+              <p>{result.desglose_pericial.analisis_ia_vit?.detalle || "Sin datos"}</p>
             </div>
             <div className="analisis-box">
               <h4>Integridad Digital (ELA)</h4>
-              <p>{result.desglose_pericial.analisis_ela?.detalle || "Sin detalle ELA"}</p>
+              <p>{result.desglose_pericial.analisis_ela?.detalle || "Sin datos"}</p>
             </div>
-          </>
-        ) : (
-          <p>No se recibió el desglose pericial del backend.</p>
+          </div>
         )}
       </div>
     </div>

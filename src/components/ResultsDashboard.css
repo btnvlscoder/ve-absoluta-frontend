@@ -1,4 +1,6 @@
-/* El contenedor principal que abraza a las dos cajas */
+/* =========================================
+   1. EL "VS" (IMÁGENES SIMÉTRICAS)
+   ========================================= */
 .images-container {
   display: flex;
   gap: 20px;
@@ -6,9 +8,8 @@
   background-color: #0f172a;
 }
 
-/* AMBAS cajas deben comportarse exactamente igual */
 .original-image-box, .heatmap-container {
-  flex: 1; /* Ocupan exactamente el 50% cada una */
+  flex: 1; 
   background-color: #1e293b;
   padding: 15px;
   border-radius: 8px;
@@ -17,7 +18,6 @@
   flex-direction: column;
 }
 
-/* El cuadro negro donde va la imagen dentro de las cajas */
 .original-wrapper, .heatmap-wrapper {
   flex: 1;
   display: flex;
@@ -25,13 +25,105 @@
   align-items: center;
   background-color: #0f172a;
   border-radius: 6px;
-  height: 350px; /* ¡Forzamos una altura estricta para que no se deformen! */
+  height: 350px; 
   overflow: hidden;
 }
 
-/* Las imágenes se adaptan sin deformarse */
 .original-img, .heatmap-img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
+}
+
+/* =========================================
+   2. CABECERA Y VEREDICTO 
+   ========================================= */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #334155;
+}
+
+.veredicto-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.veredicto-badge span:first-child {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.certeza {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 8px 18px;
+  border-radius: 30px;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.certeza.seguro {
+  background-color: rgba(34, 197, 94, 0.15);
+  border: 1px solid #22c55e;
+  color: #4ade80;
+}
+
+.certeza.critico {
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #f87171;
+}
+
+/* =========================================
+   3. DICTAMEN PERICIAL (Cajas de texto inferiores)
+   ========================================= */
+.peritaje-directo {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #334155;
+}
+
+.peritaje-titulo {
+  text-align: center;
+  color: #e2e8f0;
+  margin-bottom: 25px;
+}
+
+.peritaje-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Divide los textos en dos columnas simétricas */
+  gap: 20px;
+}
+
+.analisis-box {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.analisis-box h4 {
+  color: #38bdf8; /* Azul tecnológico para resaltar */
+  margin-top: 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.analisis-box p {
+  color: #cbd5e1;
+  line-height: 1.7;
+  font-size: 0.95rem;
+  margin: 0;
+  text-align: justify;
 }
