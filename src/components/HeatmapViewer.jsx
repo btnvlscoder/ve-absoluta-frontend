@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './HeatmapViewer.css'; // ¡CRÍTICO! Si falta esto, los botones se ven feos.
+import './HeatmapViewer.css';
 
 const HeatmapViewer = ({ result }) => {
   const [vista, setVista] = useState('raw');
