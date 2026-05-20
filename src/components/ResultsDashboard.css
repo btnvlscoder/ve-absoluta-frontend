@@ -1,37 +1,4 @@
-.results-dashboard {
-  background-color: #1e293b;
-  border-radius: 12px;
-  border: 1px solid #334155;
-  overflow: hidden;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-}
-
-.results-header {
-  padding: 20px;
-  border-bottom: 1px solid #334155;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.results-title {
-  margin: 0;
-  color: #e2e8f0;
-}
-
-.certeza-label {
-  font-size: 0.9rem;
-  color: #94a3b8;
-}
-
-.certeza-value {
-  font-size: 1.8rem;
-  font-weight: 900;
-}
-
-.text-fake { color: #ef4444; }
-.text-real { color: #22c55e; }
-
+/* El contenedor principal que abraza a las dos cajas */
 .images-container {
   display: flex;
   gap: 20px;
@@ -39,8 +6,9 @@
   background-color: #0f172a;
 }
 
-.original-image-box {
-  flex: 1;
+/* AMBAS cajas deben comportarse exactamente igual */
+.original-image-box, .heatmap-container {
+  flex: 1; /* Ocupan exactamente el 50% cada una */
   background-color: #1e293b;
   padding: 15px;
   border-radius: 8px;
@@ -49,35 +17,21 @@
   flex-direction: column;
 }
 
-.original-title {
-  text-align: center;
-  margin: 0 0 10px 0;
-  color: #94a3b8;
-  font-size: 1rem;
-}
-
-.original-wrapper {
+/* El cuadro negro donde va la imagen dentro de las cajas */
+.original-wrapper, .heatmap-wrapper {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #0f172a;
   border-radius: 6px;
-  min-height: 250px;
+  height: 350px; /* ¡Forzamos una altura estricta para que no se deformen! */
+  overflow: hidden;
 }
 
-.original-img {
+/* Las imágenes se adaptan sin deformarse */
+.original-img, .heatmap-img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
-}
-
-.radar-section {
-  padding: 0 20px;
-}
-
-@media (max-width: 768px) {
-  .images-container {
-    flex-direction: column;
-  }
 }

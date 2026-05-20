@@ -20,7 +20,7 @@
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 /* Estilo para los botones */
@@ -31,9 +31,7 @@
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.8rem;
   font-weight: 600;
-  transition: all 0.2s ease;
 }
 
 .layer-btn:hover {
