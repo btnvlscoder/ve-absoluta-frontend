@@ -28,3 +28,4 @@ const ResultsDashboard = ({ result, imagePreview }) => {
     </div>
   );
 };
+export default ResultsDashboard;
