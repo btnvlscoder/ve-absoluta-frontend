@@ -30,9 +30,12 @@ const Sidebar = () => {
         </Link>
       </nav>
 
-      <div className="sidebar-footer">
-        <Settings size={20} />
-        <span>Ajustes del Sistema</span>
+      <div className="sidebar-footer" style={{ cursor: 'default' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%', boxShadow: '0 0 8px #10b981' }}></div>
+          <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Motor IA Conectado</span>
+        </div>
+        <span style={{ fontSize: '0.7rem', color: '#475569', marginTop: '5px', display: 'block' }}>v1.0.0-MVP</span>
       </div>
     </div>
   );
