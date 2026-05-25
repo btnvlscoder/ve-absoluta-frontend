@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './HistorialCasos.css';
+import { API_BASE_URL } from '../utils/constants';
 
-// Ajusta esta URL si tu endpoint de Spring Boot se llama distinto
-const API_URL = 'https://ve-absoluta-backend.onrender.com/api/v1/analizar/historial';
 const HistorialCasos = () => {
   const [historial, setHistorial] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,8 +11,7 @@ const HistorialCasos = () => {
   useEffect(() => {
     const fetchHistorial = async () => {
       try {
-        const response = await axios.get(API_URL);
-        // Asumimos que Spring Boot devuelve un arreglo de objetos
+        const response = await axios.get(`${API_BASE_URL}/analizar/historial`);
         setHistorial(response.data);
         setLoading(false);
       } catch (err) {
@@ -52,7 +50,6 @@ const HistorialCasos = () => {
               <tr key={caso.id}>
                 <td>#{caso.id}</td>
                 <td>
-                  {/* Aquí asumo que tu campo de la BD se llama 'ruta_archivo' o similar */}
                   <img src={caso.ruta_archivo || caso.url_imagen} alt="Evidencia" className="thumbnail" />
                 </td>
                 <td>{new Date(caso.fecha_analisis || caso.fecha).toLocaleDateString()}</td>

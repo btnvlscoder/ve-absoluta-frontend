@@ -8,7 +8,6 @@ const MainLayout = () => {
     <div className="layout-container">
       <Sidebar />
       <div className="main-content">
-        {/* Aquí se inyectarán las diferentes pantallas (Dashboard, Nuevo Análisis, etc.) */}
         <Outlet /> 
       </div>
     </div>

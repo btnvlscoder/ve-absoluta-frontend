@@ -4,12 +4,7 @@ import '../index.css';
 import Header from './Header';
 import ControlPanel from './ControlPanel';
 import ResultsDashboard from './ResultsDashboard';
-
-const API_BASE_URL = 'https://ve-absoluta-backend.onrender.com/api/v1';
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
-const SERVER_LIMIT_BYTES = 1 * 1024 * 1024;
-
-const formatFileSize = (bytes) => (bytes / 1024 / 1024).toFixed(2);
+import { API_BASE_URL, MAX_FILE_SIZE_BYTES, SERVER_LIMIT_BYTES, formatFileSize, showError } from '../utils/constants';
 
 const AnalisisView = () => {
   const [file, setFile] = useState(null);
@@ -25,8 +20,6 @@ const AnalisisView = () => {
       setResult(null);
     }
   };
-
-  const showError = (message) => alert(`Alerta Forense: ${message}`);
 
   const handleUpload = async () => {
     if (!file) {
