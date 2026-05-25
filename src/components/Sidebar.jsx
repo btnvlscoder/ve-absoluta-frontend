@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShieldAlert, LayoutDashboard, History, Settings } from 'lucide-react';
+import axios from 'axios';
+import { API_BASE_URL } from '../utils/constants';
 import './Sidebar.css';
 
 const Sidebar = () => {
   const location = useLocation();
+  const [motorOnline, setMotorOnline] = useState(true);
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        // Hacemos un ping ligero al backend
+        await axios.get(`${API_BASE_URL}/analizar/estadisticas`);
+        setMotorOnline(true);
+      } catch (error) {
+        setMotorOnline(false);
+      }
+    };
+
+    checkConnection();
+
+    const interval = setInterval(checkConnection, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="sidebar">
