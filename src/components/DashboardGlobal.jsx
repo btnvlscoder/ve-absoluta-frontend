@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
 import { Database, ShieldCheck, AlertTriangle } from 'lucide-react';
-import { API_BASE_URL } from '../utils/constants'; 
+import { API_BASE_URL } from '../utils/constants';
 import './DashboardGlobal.css';
 
 const DashboardGlobal = () => {
@@ -13,7 +13,6 @@ const DashboardGlobal = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Consultamos el nuevo endpoint
         const response = await axios.get(`${API_BASE_URL}/analizar/estadisticas`);
         setStats(response.data);
         setLoading(false);
@@ -30,14 +29,17 @@ const DashboardGlobal = () => {
   if (loading) return <div className="dashboard-loading">Cargando telemetría global...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
 
-  // Datos para el gráfico de torta
   const pieData = [
     { name: 'Contenido Real', value: stats.reales },
     { name: 'Generado por IA', value: stats.fake },
   ];
 
-  // Colores idénticos a tu referencia (Verde y Rojo neón)
-  const COLORS = ['#4ade80', '#f87171']; 
+  const barData = [
+    { name: 'Verificados', cantidad: stats.reales },
+    { name: 'Manipulados', cantidad: stats.fake }
+  ];
+
+  const COLORS = ['#10b981', '#ef4444']; 
 
   return (
     <div className="dashboard-container">
@@ -46,10 +48,9 @@ const DashboardGlobal = () => {
         <p>Visión general de la integridad digital analizada por VE ABSOLUTA.</p>
       </div>
 
-      {/* --- SECCIÓN 1: TARJETAS KPI --- */}
       <div className="kpi-grid">
         <div className="kpi-card total">
-          <div className="kpi-icon"><Database size={32} /></div>
+          <div className="kpi-icon"><Database size={24} /></div>
           <div className="kpi-data">
             <h3>Total Analizado</h3>
             <p className="kpi-value">{stats.total}</p>
@@ -58,7 +59,7 @@ const DashboardGlobal = () => {
         </div>
 
         <div className="kpi-card real">
-          <div className="kpi-icon"><ShieldCheck size={32} /></div>
+          <div className="kpi-icon"><ShieldCheck size={24} /></div>
           <div className="kpi-data">
             <h3>Total Reales</h3>
             <p className="kpi-value">{stats.reales}</p>
@@ -67,7 +68,7 @@ const DashboardGlobal = () => {
         </div>
 
         <div className="kpi-card fake">
-          <div className="kpi-icon"><AlertTriangle size={32} /></div>
+          <div className="kpi-icon"><AlertTriangle size={24} /></div>
           <div className="kpi-data">
             <h3>Detecciones IA</h3>
             <p className="kpi-value">{stats.fake}</p>
@@ -76,40 +77,50 @@ const DashboardGlobal = () => {
         </div>
       </div>
 
-      {/* --- SECCIÓN 2: GRÁFICOS --- */}
       <div className="charts-grid">
-        <div className="chart-wrapper pie-chart-section">
+        <div className="chart-wrapper">
           <h3>Distribución de Integridad</h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={260}>
             <PieChart>
               <Pie
                 data={pieData}
                 cx="50%"
                 cy="50%"
-                innerRadius={70} // Efecto Donut
-                outerRadius={90}
+                innerRadius={65}
+                outerRadius={85}
                 paddingAngle={5}
                 dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                labelLine={false}
               >
                 {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
+                  <Cell key={`cell-${index}`} fill={COLORS[index]} />
                 ))}
               </Pie>
               <Tooltip 
-                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px' }}
-                itemStyle={{ color: '#e2e8f0' }}
+                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '6px' }}
+                itemStyle={{ color: '#f8fafc' }}
               />
-              <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
+              <Legend iconType="circle" />
             </PieChart>
           </ResponsiveContainer>
         </div>
         
-        {/* Aquí podríamos poner el gráfico de barras después */}
-        <div className="chart-wrapper bar-chart-placeholder">
-           <h3>Nivel de Amenaza (Últimos 7 días)</h3>
-           <div style={{color: '#94a3b8', textAlign: 'center', paddingTop: '100px'}}>Implementación pendiente</div>
+        <div className="chart-wrapper">
+          <h3>Métricas Comparativas</h3>
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={barData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+              <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} />
+              <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} />
+              <Tooltip 
+                cursor={{ fill: 'rgba(51, 65, 85, 0.2)' }}
+                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '6px' }}
+                itemStyle={{ color: '#f8fafc' }}
+              />
+              <Bar dataKey="cantidad" radius={[4, 4, 0, 0]}>
+                <Cell fill="#10b981" />
+                <Cell fill="#ef4444" />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
