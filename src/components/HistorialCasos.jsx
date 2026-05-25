@@ -55,13 +55,13 @@ const HistorialCasos = () => {
                 <td>{new Date(caso.fecha_analisis || caso.fecha).toLocaleDateString()}</td>
                 <td>{caso.confianza_global}%</td>
                 <td>
-                <span className={`badge ${
+                    <span className={`badge ${
                         (caso.veredicto_final && caso.veredicto_final.trim().toUpperCase() === 'REAL') 
                         ? 'badge-real' 
                         : 'badge-fake'
-                    }`}>                    
-                    {caso.veredicto_final}
-                  </span>
+                    }`}>
+                        {caso.veredicto_final}
+                    </span>
                 </td>
               </tr>
             ))}
