@@ -12,6 +12,9 @@ const HistorialCasos = () => {
     const fetchHistorial = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/analizar/historial`);
+        
+        console.log("Datos que llegan del Backend:", response.data[0]); 
+        
         setHistorial(response.data);
         setLoading(false);
       } catch (err) {
@@ -46,35 +49,42 @@ const HistorialCasos = () => {
             </tr>
           </thead>
           <tbody>
-            {historial.map((caso) => (
-              <tr key={caso.id}>
-                <td>#{caso.id}</td>
-                <td>
-                  <img 
-                    // Usamos rutaArchivo tal como viene de Spring Boot
-                    src={caso.rutaArchivo || '/placeholder-forense.png'} 
-                    alt="Evidencia" 
-                    className="thumbnail" 
-                    onError={(e) => { e.target.src = '/placeholder-forense.png'; }}
-                  />
-                </td>
-                <td>{new Date(caso.fecha).toLocaleDateString()}</td>
-                
-                {/* Multiplicamos por 100 y dejamos 2 decimales para la vista */}
-                <td>{(caso.confianza * 100).toFixed(2)}%</td>
-                
-                <td>
-                    <span className={`badge ${
-                        // Usamos prediccion tal como viene de Spring Boot
-                        (caso.prediccion && caso.prediccion.trim().toUpperCase() === 'REAL') 
-                        ? 'badge-real' 
-                        : 'badge-fake'
-                    }`}>
-                        {caso.prediccion}
+            {historial.map((caso) => {
+              // ==========================================
+              // 🛡️ NORMALIZACIÓN A PRUEBA DE BALAS
+              // Buscamos todas las posibles formas en las que Spring Boot pudo mandar el JSON
+              // ==========================================
+              const imgUrl = caso.rutaArchivo || caso.ruta_archivo || caso.url_imagen || '/placeholder-forense.png';
+              const dictamen = caso.prediccion || caso.veredicto_final || 'INDEFINIDO';
+              const certezaBase = caso.confianza || caso.confianza_global || 0;
+              
+              // Ajustamos la certeza (Si viene como 0.83, la pasamos a 83%)
+              const certezaPorcentaje = certezaBase <= 1 ? (certezaBase * 100) : certezaBase;
+              
+              // Verificación segura para el color de la etiqueta
+              const esReal = dictamen.trim().toUpperCase() === 'REAL';
+
+              return (
+                <tr key={caso.id}>
+                  <td>#{caso.id}</td>
+                  <td>
+                    <img 
+                      src={imgUrl} 
+                      alt="Evidencia" 
+                      className="thumbnail" 
+                      onError={(e) => { e.target.src = '/placeholder-forense.png'; }}
+                    />
+                  </td>
+                  <td>{caso.fecha ? new Date(caso.fecha).toLocaleDateString() : 'N/A'}</td>
+                  <td>{certezaPorcentaje.toFixed(2)}%</td>
+                  <td>
+                    <span className={`badge ${esReal ? 'badge-real' : 'badge-fake'}`}>
+                      {dictamen}
                     </span>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
