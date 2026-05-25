@@ -10,7 +10,7 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="sidebar-header">
         <ShieldAlert size={32} className="logo-icon" />
-        <h2>VERITAS AI</h2>
+        <h2>VE ABSOLUTA</h2>
       </div>
       
       <nav className="sidebar-nav">
