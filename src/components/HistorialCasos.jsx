@@ -50,17 +50,27 @@ const HistorialCasos = () => {
               <tr key={caso.id}>
                 <td>#{caso.id}</td>
                 <td>
-                  <img src={caso.ruta_archivo || caso.url_imagen} alt="Evidencia" className="thumbnail" />
+                  <img 
+                    // Usamos rutaArchivo tal como viene de Spring Boot
+                    src={caso.rutaArchivo || '/placeholder-forense.png'} 
+                    alt="Evidencia" 
+                    className="thumbnail" 
+                    onError={(e) => { e.target.src = '/placeholder-forense.png'; }}
+                  />
                 </td>
-                <td>{new Date(caso.fecha_analisis || caso.fecha).toLocaleDateString()}</td>
-                <td>{caso.confianza_global}%</td>
+                <td>{new Date(caso.fecha).toLocaleDateString()}</td>
+                
+                {/* Multiplicamos por 100 y dejamos 2 decimales para la vista */}
+                <td>{(caso.confianza * 100).toFixed(2)}%</td>
+                
                 <td>
                     <span className={`badge ${
-                        (caso.veredicto_final && caso.veredicto_final.trim().toUpperCase() === 'REAL') 
+                        // Usamos prediccion tal como viene de Spring Boot
+                        (caso.prediccion && caso.prediccion.trim().toUpperCase() === 'REAL') 
                         ? 'badge-real' 
                         : 'badge-fake'
                     }`}>
-                        {caso.veredicto_final}
+                        {caso.prediccion}
                     </span>
                 </td>
               </tr>
