@@ -1,11 +1,24 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+<<<<<<< HEAD
 import './App.css'; // Tu CSS principal
 
 import Header from './components/Header';
 import ControlPanel from './components/ControlPanel';
 import HeatmapViewer from './components/HeatmapViewer';
 import TechnicalBreakdown from './components/TechnicalBreakdown';
+=======
+import './index.css'; 
+import Header from './components/Header';
+import ControlPanel from './components/ControlPanel';
+import ResultsDashboard from './components/ResultsDashboard';
+
+const API_BASE_URL = 'https://ve-absoluta-backend.onrender.com/api/v1';
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+const SERVER_LIMIT_BYTES = 1 * 1024 * 1024;
+
+const formatFileSize = (bytes) => (bytes / 1024 / 1024).toFixed(2);
+>>>>>>> 6dc108a9540a1400c1cdf1af368075ce9c836e55
 
 function App() {
   const [file, setFile] = useState(null);
@@ -18,31 +31,66 @@ function App() {
     if (selectedFile) {
       setFile(selectedFile);
       setImagePreview(URL.createObjectURL(selectedFile));
-      setResult(null); 
+      setResult(null);
     }
   };
 
+  const showError = (message) => alert(`Alerta Forense: ${message}`);
+
   const handleUpload = async () => {
+<<<<<<< HEAD
     if (!file) return alert("Sube una imagen primero");
     if (file.size > 10485760) return alert("🚨 Alerta Forense: El archivo excede el tamaño máximo permitido (10MB).");
+=======
+    if (!file) {
+      alert('Sube una imagen primero');
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      showError(`El archivo excede el tamaño máximo permitido (10MB).`);
+      return;
+    }
+>>>>>>> 6dc108a9540a1400c1cdf1af368075ce9c836e55
 
     setLoading(true);
     const formData = new FormData();
     formData.append('file', file);
 
     try {
+<<<<<<< HEAD
       const response = await axios.post('https://ve-absoluta-backend.onrender.com/api/v1/analizar/upload', formData, {
+=======
+      const response = await axios.post(`${API_BASE_URL}/analizar/upload`, formData, {
+>>>>>>> 6dc108a9540a1400c1cdf1af368075ce9c836e55
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setResult(response.data); 
+      setResult(response.data);
     } catch (error) {
+<<<<<<< HEAD
       console.error("Algo falló en la subida:", error);
       alert("Fallo en la comunicación con el servidor. Revisa la consola para más detalles.");
+=======
+      console.error('Error en la subida:', error);
+
+      if (error.response?.status === 413) {
+        showError(`La imagen es demasiado pesada (${formatFileSize(file.size)} MB). Límite: 1 MB.`);
+      } else if (error.message === 'Network Error' && file.size > SERVER_LIMIT_BYTES) {
+        showError(`La imagen pesa ${formatFileSize(file.size)} MB y excede el límite del servidor.`);
+      } else if (error.response?.data?.mensaje) {
+        showError(error.response.data.mensaje);
+      } else if (error.request) {
+        alert('El motor principal no responde. Verifica que el backend esté encendido.');
+      } else {
+        alert('Error de red inesperado.');
+      }
+>>>>>>> 6dc108a9540a1400c1cdf1af368075ce9c836e55
     } finally {
       setLoading(false);
     }
   };
 
+<<<<<<< HEAD
   const prediccionFinal = result?.veredicto_final || result?.prediccion;
   const confianzaFinal = result?.confianza_global || result?.confianza;
   const isFake = prediccionFinal === 'FAKE';
@@ -54,11 +102,18 @@ function App() {
         
         <Header />
         
+=======
+  return (
+    <div className="app-container">
+      <div className="app-content">
+        <Header />
+>>>>>>> 6dc108a9540a1400c1cdf1af368075ce9c836e55
         <ControlPanel 
           onFileChange={handleFileChange} 
           onUpload={handleUpload} 
           loading={loading} 
         />
+<<<<<<< HEAD
 
         {result && (
           <div className="results-dashboard">
@@ -87,6 +142,13 @@ function App() {
             <TechnicalBreakdown desglose={result.desglose_pericial} id={result.id} nombreArchivo={result.nombreArchivo} />
             
           </div>
+=======
+        {result && (
+          <ResultsDashboard 
+            result={result} 
+            imagePreview={imagePreview} 
+          />
+>>>>>>> 6dc108a9540a1400c1cdf1af368075ce9c836e55
         )}
       </div>
     </div>

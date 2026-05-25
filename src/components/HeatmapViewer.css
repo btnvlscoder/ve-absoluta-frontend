@@ -11,6 +11,7 @@
 .heatmap-title {
   text-align: center;
   margin: 0 0 10px 0;
+<<<<<<< HEAD
   color: #22d3ee;
   font-size: 1rem;
 }
@@ -45,6 +46,43 @@
   background-color: #475569;
 }
 
+=======
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* Contenedor de botones estético y compacto */
+.controls-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Estilo para los botones */
+.layer-btn {
+  background-color: #0f172a;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.layer-btn:hover {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+.layer-btn.active {
+  background-color: #0ea5e9;
+  color: #ffffff;
+  border-color: #0ea5e9;
+}
+
+/* El wrapper de la imagen forzado a compartir altura */
+>>>>>>> 6dc108a9540a1400c1cdf1af368075ce9c836e55
 .heatmap-wrapper {
   flex: 1;
   display: flex;
@@ -53,6 +91,10 @@
   background-color: #0f172a;
   border-radius: 6px;
   min-height: 250px;
+<<<<<<< HEAD
+=======
+  overflow: hidden;
+>>>>>>> 6dc108a9540a1400c1cdf1af368075ce9c836e55
 }
 
 .heatmap-img {
@@ -62,5 +104,10 @@
 }
 
 .heatmap-loading {
+<<<<<<< HEAD
   color: #475569;
+=======
+  color: #64748b;
+  font-size: 0.9rem;
+>>>>>>> 6dc108a9540a1400c1cdf1af368075ce9c836e55
 }
