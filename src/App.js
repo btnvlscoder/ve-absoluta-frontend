@@ -5,6 +5,12 @@ import Header from './components/Header';
 import ControlPanel from './components/ControlPanel';
 import ResultsDashboard from './components/ResultsDashboard';
 
+const API_BASE_URL = 'https://ve-absoluta-backend.onrender.com/api/v1';
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+const SERVER_LIMIT_BYTES = 1 * 1024 * 1024;
+
+const formatFileSize = (bytes) => (bytes / 1024 / 1024).toFixed(2);
+
 function App() {
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -16,35 +22,45 @@ function App() {
     if (selectedFile) {
       setFile(selectedFile);
       setImagePreview(URL.createObjectURL(selectedFile));
-      setResult(null); 
+      setResult(null);
     }
   };
 
+  const showError = (message) => alert(`Alerta Forense: ${message}`);
+
   const handleUpload = async () => {
-    if (!file) return alert("Sube una imagen primero");
-    if (file.size > 10485760) return alert("Alerta Forense: El archivo excede el tamaño máximo permitido (10MB).");
+    if (!file) {
+      alert('Sube una imagen primero');
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      showError(`El archivo excede el tamaño máximo permitido (10MB).`);
+      return;
+    }
 
     setLoading(true);
     const formData = new FormData();
     formData.append('file', file);
 
     try {
-      const response = await axios.post('https://ve-absoluta-backend.onrender.com/api/v1/analizar/upload', formData, {
+      const response = await axios.post(`${API_BASE_URL}/analizar/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setResult(response.data); 
+      setResult(response.data);
     } catch (error) {
-      console.error("Algo falló en la subida:", error);
-      if (error.response && error.response.status === 413) {
-        alert(`Alerta Forense: La imagen es demasiado pesada (${(file.size / 1024 / 1024).toFixed(2)} MB). Límite: 1 MB.`);
-      } else if (error.message === 'Network Error' && file.size > 1048576) { 
-        alert(`Alerta Forense: La imagen pesa ${(file.size / 1024 / 1024).toFixed(2)} MB y excede el límite del servidor.`);
+      console.error('Error en la subida:', error);
+
+      if (error.response?.status === 413) {
+        showError(`La imagen es demasiado pesada (${formatFileSize(file.size)} MB). Límite: 1 MB.`);
+      } else if (error.message === 'Network Error' && file.size > SERVER_LIMIT_BYTES) {
+        showError(`La imagen pesa ${formatFileSize(file.size)} MB y excede el límite del servidor.`);
       } else if (error.response?.data?.mensaje) {
-        alert(`Alerta Forense: ${error.response.data.mensaje}`);
+        showError(error.response.data.mensaje);
       } else if (error.request) {
-        alert("El motor principal no responde. Verifica que el backend esté encendido.");
+        alert('El motor principal no responde. Verifica que el backend esté encendido.');
       } else {
-        alert("Error de red inesperado.");
+        alert('Error de red inesperado.');
       }
     } finally {
       setLoading(false);
@@ -54,23 +70,18 @@ function App() {
   return (
     <div className="app-container">
       <div className="app-content">
-        
         <Header />
-        
         <ControlPanel 
           onFileChange={handleFileChange} 
           onUpload={handleUpload} 
           loading={loading} 
         />
-
-        {/* El orquestador visual toma el control aquí */}
         {result && (
           <ResultsDashboard 
             result={result} 
             imagePreview={imagePreview} 
           />
         )}
-        
       </div>
     </div>
   );

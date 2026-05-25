@@ -4,14 +4,12 @@ import HeatmapViewer from './HeatmapViewer';
 import ForensicRadarChart from './ForensicRadarChart';
 
 const ResultsDashboard = ({ result, imagePreview }) => {
-  
   if (!result) {
     return <div className="loading-state">Esperando resultados del análisis...</div>;
   }
 
   return (
-    <div className="results-dashboard">\
-      {/* 1. SECCIÓN DE CABECERA Y VEREDICTO*/}
+    <div className="results-dashboard">
       <div className="dashboard-header">
         <h2 className="dashboard-title">Reporte de Evidencia Forense</h2>
         <div className="veredicto-badge">
@@ -21,8 +19,7 @@ const ResultsDashboard = ({ result, imagePreview }) => {
           </span>
         </div>
       </div>
-      
-      {/* 2. IMAGEN ORIGINAL (Lado a Lado) */}
+
       <div className="images-container">
         <div className="original-image-box">
           <h3>Evidencia Recibida</h3>
@@ -32,20 +29,18 @@ const ResultsDashboard = ({ result, imagePreview }) => {
             <p>No hay imagen original cargada</p>
           )}
         </div>
-        
-        {/* HEATMAP */}
+
         <HeatmapViewer result={result} />
       </div>
 
       <div className="radar-section">
         <ForensicRadarChart metricas={result.metadata?.metricas_heuristicas} />
       </div>
-      
-      {/* 3. DETALLE DIRECTO DESDE EL BACKEND*/}
+
       <div className="peritaje-directo">
         <h3 className="peritaje-titulo">Dictamen Pericial Detallado</h3>
         {result.desglose_pericial && (
-          <div className="peritaje-grid"> 
+          <div className="peritaje-grid">
             <div className="analisis-box">
               <h4>Inteligencia Artificial (ViT)</h4>
               <p>{result.desglose_pericial.analisis_ia_vit?.detalle || "Sin datos"}</p>

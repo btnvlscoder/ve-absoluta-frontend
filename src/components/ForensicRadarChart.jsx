@@ -2,15 +2,15 @@ import React from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import './ForensicRadarChart.css';
 
+const UMBRAL_SOSPECHA = 0.65;
+
 const ForensicRadarChart = ({ metricas }) => {
-  // 1. Si no hay métricas, devolvemos null o un mensaje.
   if (!metricas || metricas.length === 0) {
     return <div className="radar-placeholder">Esperando telemetría forense...</div>;
   }
 
-  // 2. Interpretación dinámica (La que definimos hace un rato)
   const interpretarRadar = (data) => {
-    const esSospechoso = data.some(m => m.valor > 0.65);
+    const esSospechoso = data.some(m => m.valor > UMBRAL_SOSPECHA);
     return esSospechoso 
       ? "El análisis detectó irregularidades en la estructura de píxeles. Estas anomalías son consistentes con procesos de manipulación digital."
       : "La integridad matemática de la imagen es óptima. Los valores se encuentran dentro de los rangos estadísticos de una fotografía natural.";
@@ -39,7 +39,6 @@ const ForensicRadarChart = ({ metricas }) => {
         </ResponsiveContainer>
       </div>
 
-      {/* 3. DIAGNÓSTICO INTELIGENTE */}
       <div className="radar-interpretation">
         <h4>Diagnóstico de Integridad</h4>
         <p>{interpretarRadar(metricas)}</p>
