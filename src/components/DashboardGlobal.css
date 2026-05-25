@@ -23,7 +23,6 @@
   font-size: 0.95rem;
 }
 
-/* --- TARJETAS KPI --- */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -76,7 +75,6 @@
   font-size: 0.75rem;
 }
 
-/* --- CONTENEDORES DE GRÁFICOS --- */
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -98,8 +96,12 @@
   letter-spacing: 0.3px;
 }
 
-/* Quita cualquier residuo o recuadro blanco de las librerías de gráficos */
-.recharts-wrapper, .recharts-surface {
+/* =========================================
+   FORZADO DE FONDOS (ELIMINA EL BLANCO) 
+   ========================================= */
+.recharts-wrapper, 
+.recharts-surface, 
+.recharts-default-tooltip {
   background: transparent !important;
 }
 
