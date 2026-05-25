@@ -50,12 +50,24 @@ const Sidebar = () => {
         </Link>
       </nav>
 
+      {/* FOOTER CON ESTADO REAL DEL SISTEMA */}
       <div className="sidebar-footer" style={{ cursor: 'default' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%', boxShadow: '0 0 8px #10b981' }}></div>
-          <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Motor IA Conectado</span>
+          <div style={{ 
+            width: '8px', 
+            height: '8px', 
+            backgroundColor: motorOnline ? '#10b981' : '#ef4444', 
+            borderRadius: '50%', 
+            boxShadow: motorOnline ? '0 0 8px #10b981' : '0 0 8px #ef4444',
+            transition: 'all 0.3s ease'
+          }}></div>
+          <span style={{ fontSize: '0.85rem', color: motorOnline ? '#64748b' : '#ef4444' }}>
+            {motorOnline ? 'Motor IA Conectado' : 'Fallo de Conexión'}
+          </span>
         </div>
-        <span style={{ fontSize: '0.7rem', color: '#475569', marginTop: '5px', display: 'block' }}>v1.0.0-MVP</span>
+        <span style={{ fontSize: '0.7rem', color: '#475569', marginTop: '5px', display: 'block' }}>
+          v1.0.0-MVP
+        </span>
       </div>
     </div>
   );
