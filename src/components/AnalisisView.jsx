@@ -90,7 +90,6 @@ const AnalisisView = () => {
               padding: 0 !important;
             }
 
-            /* AJUSTES MILIMÉTRICOS PARA QUE ENCABECE EXACTAMENTE EN 1 PÁGINA */
             .informe-header { border-bottom: 3px solid #1f2937; padding-bottom: 5px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
             .informe-header h1 { font-size: 22px; font-weight: bold; text-transform: uppercase; margin: 0; }
             .informe-header h2 { font-size: 13px; color: #4b5563; margin: 3px 0 0 0; }
