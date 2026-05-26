@@ -109,7 +109,7 @@ const AnalisisView = () => {
             .grid-img img { max-width: 100%; max-height: 220px; border: 2px solid #374151; object-fit: contain; }
             .grid-img p { font-size: 9px; font-weight: bold; background: #e5e7eb; padding: 4px; margin-bottom: 5px; border: 1px solid #9ca3af; }
             
-            .caja-firmas { display: flex; justify-content: space-around; margin-top: 30px; text-align: center; }
+            .caja-firmas { display: flex; justify-content: space-around; margin-top: 60px; text-align: center; }
             .caja-firmas div { border-top: 2px solid black; width: 220px; padding-top: 5px; font-weight: bold; font-size: 11px; text-transform: uppercase; }
             .caja-firmas span { display: block; font-size: 9px; font-weight: normal; color: #4b5563; margin-top: 2px; }
             
