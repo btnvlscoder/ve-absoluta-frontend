@@ -60,7 +60,6 @@ const AnalisisView = () => {
     }
   };
 
-  // Función que llama a la API del navegador
   const generarPDF = () => {
     window.print();
   };
@@ -68,10 +67,63 @@ const AnalisisView = () => {
   return (
     <div className="app-container">
       
-      {/* =========================================================
-          1. VISTA WEB NORMAL (Se oculta al imprimir con print:hidden)
-          ========================================================= */}
-      <div className="app-content print:hidden">
+      {/* ==============================================================
+          ESTILOS INYECTADOS DIRECTAMENTE 
+          ============================================================== */}
+      <style>
+        {`
+          /* REGLA DE ORO: Ocultar el informe pericial en la vista normal del monitor */
+          @media screen {
+            .informe-pericial-secreto {
+              display: none !important;
+            }
+          }
+
+          /* REGLAS PARA CUANDO SE ABRE LA VENTANA DE IMPRESIÓN (PDF) */
+          @media print {
+            /* 1. Ocultar la aplicación web normal y botones */
+            .vista-app-normal {
+              display: none !important;
+            }
+            
+            /* 2. Mostrar el informe pericial y darle estilo de documento oficial */
+            .informe-pericial-secreto {
+              display: block !important;
+              width: 100% !important;
+              background: white !important;
+              color: black !important;
+              font-family: Arial, sans-serif !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+
+            /* Estilos internos del PDF */
+            .informe-header { border-bottom: 3px solid #1f2937; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+            .informe-header h1 { font-size: 24px; font-weight: bold; text-transform: uppercase; margin: 0; }
+            .informe-header h2 { font-size: 14px; color: #4b5563; margin: 5px 0 0 0; }
+            .seccion-inf { background: #f3f4f6; padding: 15px; border: 1px solid #d1d5db; margin-bottom: 20px; border-radius: 4px; }
+            .seccion-inf h3 { font-size: 14px; font-weight: bold; border-bottom: 1px solid #9ca3af; padding-bottom: 5px; margin-top: 0; margin-bottom: 10px; }
+            .seccion-inf p { font-size: 12px; margin: 5px 0; font-family: monospace; }
+            .dictamen-caja { border-left: 8px solid #dc2626; background: #fef2f2; padding: 15px; margin-bottom: 20px; }
+            .dictamen-caja.real { border-left: 8px solid #16a34a; background: #f0fdf4; }
+            .dictamen-caja h3 { font-size: 16px; margin-top: 0; margin-bottom: 10px; }
+            .grid-img { display: flex; justify-content: space-between; gap: 20px; margin-top: 15px; }
+            .grid-img div { width: 48%; text-align: center; }
+            .grid-img img { max-width: 100%; max-height: 250px; border: 2px solid #374151; object-fit: contain; }
+            .grid-img p { font-size: 10px; font-weight: bold; background: #e5e7eb; padding: 5px; margin-bottom: 5px; border: 1px solid #9ca3af; }
+            .caja-firmas { display: flex; justify-content: space-around; margin-top: 50px; text-align: center; }
+            .caja-firmas div { border-top: 2px solid black; width: 220px; padding-top: 5px; font-weight: bold; font-size: 12px; text-transform: uppercase; }
+            .caja-firmas span { display: block; font-size: 10px; font-weight: normal; color: #4b5563; margin-top: 2px; }
+            @page { margin: 1cm; }
+            body { background-color: white; }
+          }
+        `}
+      </style>
+
+      {/* ==============================================================
+          1. VISTA WEB DE LA APLICACIÓN NORMAL 
+          ============================================================== */}
+      <div className="app-content vista-app-normal">
         <Header />
         <ControlPanel 
           onFileChange={handleFileChange} 
@@ -85,11 +137,20 @@ const AnalisisView = () => {
               result={result} 
               imagePreview={imagePreview} 
             />
-            {/* BOTÓN PARA GENERAR EL PDF PERICIAL */}
-            <div className="flex justify-center mt-6 mb-10">
+            {/* BOTÓN PERICIAL */}
+            <div style={{ textAlign: 'center', marginTop: '20px', marginBottom: '30px' }}>
               <button 
                 onClick={generarPDF}
-                className="px-8 py-3 bg-blue-800 text-white font-bold rounded shadow-lg hover:bg-blue-900 transition-colors border border-blue-950"
+                style={{ 
+                  padding: '12px 24px', 
+                  backgroundColor: '#1e3a8a', 
+                  color: 'white', 
+                  fontWeight: 'bold', 
+                  border: 'none', 
+                  borderRadius: '5px', 
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                }}
               >
                 📄 Descargar Informe Pericial (PDF)
               </button>
@@ -99,46 +160,39 @@ const AnalisisView = () => {
       </div>
 
       {/* ==============================================================
-          2. PLANTILLA DEL INFORME PERICIAL (SOLO VISIBLE EN EL PDF)
+          2. DOCUMENTO PDF OCULTO
           ============================================================== */}
       {result && (
-        <div className="hidden print:block bg-white text-black p-8 font-sans w-full min-h-screen">
+        <div className="informe-pericial-secreto">
           
-          {/* Encabezado Institucional */}
-          <div className="border-b-4 border-gray-800 pb-4 mb-6 flex justify-between items-end">
+          <div className="informe-header">
             <div>
-              <h1 className="text-3xl font-extrabold uppercase tracking-wider">Reporte Pericial Forense</h1>
-              <h2 className="text-lg font-semibold text-gray-600 mt-1">Análisis de Integridad Óptica y Redes Neuronales</h2>
-              <h3 className="text-sm font-bold text-blue-800 mt-2">SISTEMA VE ABSOLUTA v2.0</h3>
+              <h1>Reporte Pericial Forense</h1>
+              <h2>Análisis de Integridad Óptica y Redes Neuronales</h2>
+              <h3 style={{ fontSize: '11px', color: '#1e3a8a', marginTop: '5px', marginBottom: '0' }}>SISTEMA VE ABSOLUTA v2.0</h3>
             </div>
-            <div className="text-right text-sm">
-              <p><strong>Fecha de Emisión:</strong> {new Date().toLocaleString('es-CL')}</p>
-              <p><strong>Solicitante:</strong> Ministerio Público - Chile</p>
+            <div style={{ textAlign: 'right', fontSize: '11px' }}>
+              <p style={{ margin: '2px 0' }}><strong>Fecha de Emisión:</strong> {new Date().toLocaleString('es-CL')}</p>
+              <p style={{ margin: '2px 0' }}><strong>Solicitante:</strong> Ministerio Público - Chile</p>
             </div>
           </div>
 
-          {/* Cadena de Custodia (El traceId es la estrella aquí) */}
-          <div className="bg-gray-100 p-4 border border-gray-400 mb-6 rounded">
-            <h3 className="font-bold text-md mb-2 border-b border-gray-300 pb-1">I. CADENA DE CUSTODIA Y TRAZABILIDAD</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm font-mono mt-2">
-              {/* Usa el ID del resultado de la base de datos como UUID */}
+          <div className="seccion-inf">
+            <h3>I. CADENA DE CUSTODIA Y TRAZABILIDAD</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               <p><strong>UUID Evidencia:</strong> {result.id || "81696341-7118-4efe-85c4-4d50f011f44e"}</p>
               <p><strong>Algoritmo Core:</strong> Vision Transformer (ViT) v2.0</p>
-              <p><strong>Motor Visual:</strong> XAI OpenCV (Heatmap, Threshold)</p>
+              <p><strong>Motor Visual:</strong> XAI OpenCV (Heatmap)</p>
               <p><strong>Estado Servidor:</strong> CONEXIÓN CIFRADA - VÁLIDA</p>
             </div>
           </div>
 
-          {/* Veredicto Oficial */}
-          <div className={`p-5 border-l-8 mb-6 ${result.veredicto_final === 'FAKE' ? 'border-red-600 bg-red-50' : 'border-green-600 bg-green-50'}`}>
-            <h3 className="font-bold text-xl mb-2">
-              II. DICTAMEN TÉCNICO: 
-              <span className={result.veredicto_final === 'FAKE' ? 'text-red-700 ml-2 font-black tracking-widest' : 'text-green-700 ml-2 font-black tracking-widest'}>
-                [ {result.veredicto_final} ]
-              </span>
+          <div className={`dictamen-caja ${result.veredicto_final === 'REAL' ? 'real' : ''}`}>
+            <h3 style={{ color: result.veredicto_final === 'FAKE' ? '#b91c1c' : '#15803d' }}>
+              II. DICTAMEN TÉCNICO: [ {result.veredicto_final} ]
             </h3>
-            <p className="text-md"><strong>Certeza Matemática Computacional:</strong> {result.confianza_global}%</p>
-            <p className="mt-3 text-justify leading-relaxed">
+            <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '13px' }}><strong>Certeza Matemática Computacional:</strong> {result.confianza_global}%</p>
+            <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '13px', marginTop: '10px', lineHeight: '1.4' }}>
               <strong>Conclusión Pericial:</strong> El análisis heurístico-óptico y la extracción de matrices de atención han 
               {result.veredicto_final === 'FAKE' 
                 ? " identificado inconsistencias críticas en la estructura de píxeles, incompatibles con la huella óptica natural de un sensor fotográfico real, sugiriendo manipulación digital por terceros. Nivel de Alerta Legal: CRÍTICO." 
@@ -146,31 +200,28 @@ const AnalisisView = () => {
             </p>
           </div>
 
-          {/* Evidencia Gráfica (Mapas de Calor) */}
-          <div className="mb-10">
-            <h3 className="font-bold text-md mb-4 border-b border-gray-800 pb-1">III. ANÁLISIS DE IA EXPLICABLE (XAI)</h3>
-            <div className="grid grid-cols-2 gap-8">
-              <div className="text-center">
-                <p className="text-xs font-bold bg-gray-200 py-1 mb-2 border border-gray-400">EVIDENCIA ORIGINAL</p>
-                <img src={imagePreview} alt="Original" className="w-full border-2 border-gray-800 shadow-sm object-contain max-h-64" />
+          <div style={{ marginTop: '20px' }}>
+            <h3 style={{ borderBottom: '2px solid black', paddingBottom: '5px', fontSize: '14px', fontWeight: 'bold' }}>III. ANÁLISIS DE IA EXPLICABLE (XAI)</h3>
+            <div className="grid-img">
+              <div>
+                <p>EVIDENCIA ORIGINAL</p>
+                <img src={imagePreview} alt="Original" />
               </div>
-              <div className="text-center">
-                <p className="text-xs font-bold bg-gray-200 py-1 mb-2 border border-gray-400">MATRIZ DE ATENCIÓN (THRESHOLD JET)</p>
-                {/* Cargamos el heatmap que viene desde Spring Boot */}
-                <img src={result.heatmap_threshold || result.heatmap_base64} alt="Heatmap" className="w-full border-2 border-gray-800 shadow-sm object-contain max-h-64" />
+              <div>
+                <p>MATRIZ DE ATENCIÓN (THRESHOLD JET)</p>
+                <img src={result.heatmap_threshold || result.heatmap_base64} alt="Heatmap" />
               </div>
             </div>
           </div>
 
-          {/* Firmas Legales */}
-          <div className="mt-24 pt-8 flex justify-around text-center">
+          <div className="caja-firmas">
             <div>
-              <p className="border-t-2 border-black w-64 mx-auto pt-2 font-bold uppercase text-sm">Firma Perito Informático</p>
-              <p className="text-xs mt-1 text-gray-600">Brigada Investigadora del Cibercrimen PDI</p>
+              Firma Perito Informático
+              <span>Brigada Investigadora del Cibercrimen PDI</span>
             </div>
             <div>
-              <p className="border-t-2 border-black w-48 mx-auto pt-2 font-bold uppercase text-sm">Timbre Institucional</p>
-              <p className="text-xs mt-1 text-gray-600">Validación del Sistema Judicial</p>
+              Timbre Institucional
+              <span>Validación del Sistema Judicial</span>
             </div>
           </div>
 
