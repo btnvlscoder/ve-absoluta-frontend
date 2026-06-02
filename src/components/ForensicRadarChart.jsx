@@ -7,27 +7,26 @@ const ForensicRadarChart = ({ metricas }) => {
     return <div className="radar-placeholder">Esperando telemetría forense...</div>;
   }
 
-  const interpretarRadar = (data) => {
-    // Clasificamos los picos de anomalía
-    const criticos = data.filter(m => m.valor >= 0.8);
-    const sospechosos = data.filter(m => m.valor >= 0.6 && m.valor < 0.8);
-    const totalAnomalos = criticos.length + sospechosos.length;
-
-    // Generamos la narrativa dinámica
-    if (criticos.length >= 2 || totalAnomalos >= 3) {
+const interpretarRadar = (data) => {
+    // Calculamos un "score" de anomalía global en lugar de depender solo de picos altos
+    const totalAnomalia = data.reduce((acc, m) => acc + m.valor, 0) / data.length;
+    const picosCriticos = data.filter(m => m.valor >= 0.5); // Bajamos el umbral de 0.8 a 0.5
+    
+    // Si hay picos claros (>0.5) o el promedio general es inusualmente alto
+    if (picosCriticos.length >= 2 || totalAnomalia > 0.35) {
       return {
         severidad: "critico",
-        texto: `Desviación matemática severa. Se identificaron múltiples vectores anómalos (destacando ${criticos[0]?.parametro || sospechosos[0]?.parametro}). La dispersión estructural es incompatible con la física de un sensor real, indicando manipulación profunda o síntesis.`
+        texto: `Se detectaron desviaciones estructurales significativas. La dispersión en ${picosCriticos[0]?.parametro || 'vectores forenses'} es incompatible con la huella técnica esperada.`
       };
-    } else if (totalAnomalos > 0) {
+    } else if (picosCriticos.length > 0 || totalAnomalia > 0.15) {
       return {
         severidad: "sospechoso",
-        texto: `Irregularidades estructurales localizadas. Se detectó actividad inusual en ${sospechosos[0]?.parametro || criticos[0]?.parametro}. Esto es consistente con compresión agresiva (ej. redes sociales), filtros digitales o alteraciones parciales.`
+        texto: `La evidencia presenta irregularidades leves en ${picosCriticos[0]?.parametro || 'la firma digital'}. Puede tratarse de compresión, filtros o manipulación parcial.`
       };
     } else {
       return {
         severidad: "seguro",
-        texto: "Integridad matemática validada. Los vectores de frecuencia, ruido y entropía convergen dentro de los parámetros estadísticos esperados para una captura óptica natural."
+        texto: "Integridad matemática validada. Todos los vectores de ruido y frecuencia convergen dentro de los parámetros esperados."
       };
     }
   };
