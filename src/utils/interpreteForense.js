@@ -17,14 +17,10 @@ export const generarNarrativaPericial = (datosCrudos) => {
 
     // --- 1. BLOQUE NEURAL (Vision Transformer) ---
     if (vit_prediccion === "FAKE") {
-        if (vit_confianza > 85) {
-            dictamenNeural = `El modelo neuronal identifica patrones sintéticos críticos con alta certeza (${vit_confianza.toFixed(1)}%). Las texturas en la zona ${vit_sector} son matemáticamente incompatibles con una captura física.`;
-            estadoGlobal = "CRÍTICO";
-            colorBadge = "red";
+        if (vit_confianza >= 95) {
+            dictamenNeural = `El modelo neuronal identifica patrones sintéticos críticos con certeza absoluta (${vit_confianza.toFixed(1)}%). Las texturas en la zona ${vit_sector} son matemáticamente incompatibles con una captura física.`;
         } else if (vit_confianza > 65) {
             dictamenNeural = `El escaneo detecta indicios moderados de alteración (${vit_confianza.toFixed(1)}%) en el sector ${vit_sector}, sugiriendo una posible manipulación superficial.`;
-            estadoGlobal = "SOSPECHOSO";
-            colorBadge = "orange";
         } else {
             dictamenNeural = `Anomalías leves detectadas (${vit_confianza.toFixed(1)}%), pero no alcanzan el umbral forense para determinar síntesis total.`;
         }
@@ -38,30 +34,41 @@ export const generarNarrativaPericial = (datosCrudos) => {
     const tieneDegradacionSevera = ela_max_diff > 65;
 
     if (tieneHuellaFisica) {
-        dictamenEstructural = `Análisis de hardware positivo: Se confirma fuerte presencia de ruido estático (Varianza Laplaciana: ${sensor_variance.toFixed(1)}), comprobando que la matriz base proviene de un sensor óptico real.`;
+        dictamenEstructural = `Análisis de hardware positivo: Se confirma presencia de ruido estático (Varianza Laplaciana: ${sensor_variance.toFixed(1)}).`;
     } else if (careceHuellaFisica) {
-        dictamenEstructural = `Análisis de hardware negativo: Ausencia de ruido térmico de lente (Varianza Laplaciana: ${sensor_variance.toFixed(1)}). La imagen es inusualmente plana, característico de renders digitales.`;
+        dictamenEstructural = `Análisis de hardware negativo: Ausencia de ruido térmico de lente (Varianza Laplaciana: ${sensor_variance.toFixed(1)}). La imagen es inusualmente plana.`;
     } else {
-        dictamenEstructural = `Análisis de hardware moderado: Varianza detectada de ${sensor_variance.toFixed(1)}. Compatible con cámaras de smartphones modernos con reducción de ruido automática.`;
+        dictamenEstructural = `Análisis de hardware moderado: Varianza detectada de ${sensor_variance.toFixed(1)}. Compatible con reducción de ruido automática de cámaras modernas.`;
     }
 
     // --- 3. RESOLUCIÓN DE CONFLICTOS (Cruce Pericial) ---
-    if (vit_prediccion === "FAKE" && tieneHuellaFisica) {
-        conclusionForense = "CONFLICTO IDENTIFICADO: La matriz base posee huella de cámara real, pero la red neuronal detecta síntesis. Esto es altamente compatible con un injerto digital, Face-Swap o fotomontaje parcial sobre una escena auténtica.";
-        estadoGlobal = "ALTERACIÓN PARCIAL";
-        colorBadge = "orange";
-    } 
-    else if (vit_prediccion === "FAKE" && careceHuellaFisica) {
-        conclusionForense = "SÍNTESIS PURA: La alerta crítica de la red neuronal sumada a la ausencia total de huella óptica confirman que este archivo fue generado íntegramente por algoritmos generativos.";
-        estadoGlobal = "SINTÉTICO (IA)";
-        colorBadge = "red";
+    if (vit_prediccion === "FAKE") {
+        if (vit_confianza >= 95) {
+            // CERTEZA ABSOLUTA DE IA: Si hay ruido, es "grano artificial" añadido por la IA.
+            conclusionForense = tieneHuellaFisica 
+                ? "SÍNTESIS CON RUIDO ARTIFICIAL: La IA inyectó 'grano de película' para simular realismo (causando varianza alta), pero la red neuronal detecta generación total con certeza absoluta."
+                : "SÍNTESIS PURA: La alerta crítica de la red neuronal sumada a la ausencia total de huella óptica confirman que este archivo fue generado íntegramente por algoritmos generativos.";
+            estadoGlobal = "SINTÉTICO (IA)";
+            colorBadge = "red";
+        } 
+        else if (tieneHuellaFisica) {
+            // CONFIANZA MODERADA + Huella física real
+            conclusionForense = "ALTERACIÓN PARCIAL: La matriz base posee huella de cámara real, pero la red neuronal detecta síntesis localizada. Esto es altamente compatible con un injerto digital, Face-Swap o fotomontaje parcial sobre una escena auténtica.";
+            estadoGlobal = "ALTERACIÓN PARCIAL";
+            colorBadge = "orange";
+        } 
+        else {
+            conclusionForense = "SÍNTESIS PURA: La falta de huella óptica y la alerta de la IA confirman generación algorítmica.";
+            estadoGlobal = "SINTÉTICO (IA)";
+            colorBadge = "red";
+        }
     } 
     else if (vit_prediccion === "REAL" && tieneDegradacionSevera) {
-        conclusionForense = "DEGRADACIÓN POR COMPRESIÓN: La evidencia no contiene IA, pero presenta anomalías en su compresión (Delta ELA: ${ela_max_diff}). Esto indica transmisión repetida por redes sociales (ej. WhatsApp), perdiendo sus metadatos originales.";
+        conclusionForense = `DEGRADACIÓN POR COMPRESIÓN: La evidencia no contiene IA, pero presenta anomalías en su compresión (Delta ELA: ${ela_max_diff}). Esto indica transmisión repetida por redes sociales (ej. WhatsApp), perdiendo sus metadatos originales.`;
         estadoGlobal = "DEGRADADO";
         colorBadge = "yellow";
     } 
-    else if (vit_prediccion === "REAL" && (tieneHuellaFisica || (!careceHuellaFisica && !tieneDegradacionSevera))) {
+    else {
         conclusionForense = "INTEGRIDAD CONFIRMADA: La IA y la matemática estructural coinciden. La evidencia mantiene su pureza óptica original sin alteraciones detectables.";
         estadoGlobal = "AUTÉNTICO";
         colorBadge = "green";
