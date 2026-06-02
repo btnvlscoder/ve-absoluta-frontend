@@ -6,11 +6,18 @@ import ControlPanel from './ControlPanel';
 import ResultsDashboard from './ResultsDashboard';
 import { API_BASE_URL, MAX_FILE_SIZE_BYTES, SERVER_LIMIT_BYTES, formatFileSize, showError } from '../utils/constants';
 
+import { generarNarrativaPericial } from '../utils/interpreteForense';
+
 const AnalisisView = () => {
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Variable para almacenar el reporte dinámico si el resultado existe
+  const reporteDinamico = result && result.datos_crudos_frontend 
+    ? generarNarrativaPericial(result.datos_crudos_frontend) 
+    : null;
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -98,21 +105,29 @@ const AnalisisView = () => {
             .seccion-inf h3 { font-size: 13px; font-weight: bold; border-bottom: 1px solid #9ca3af; padding-bottom: 5px; margin-top: 0; margin-bottom: 8px; }
             .seccion-inf p { font-size: 11px; margin: 4px 0; font-family: monospace; }
             
-            .dictamen-caja { border-left: 8px solid #dc2626; background: #fef2f2; padding: 12px 15px; margin-bottom: 15px; }
-            .dictamen-caja.real { border-left: 8px solid #16a34a; background: #f0fdf4; }
-            .dictamen-caja h3 { font-size: 15px; margin-top: 0; margin-bottom: 8px; }
+            /* Clases Dinámicas para la Caja de Dictamen */
+            .dictamen-caja { border-left: 8px solid #9ca3af; background: #f3f4f6; padding: 12px 15px; margin-bottom: 15px; }
+            .dictamen-caja.red { border-left-color: #dc2626; background: #fef2f2; }
+            .dictamen-caja.green { border-left-color: #16a34a; background: #f0fdf4; }
+            .dictamen-caja.orange { border-left-color: #ea580c; background: #fff7ed; }
+            .dictamen-caja.yellow { border-left-color: #ca8a04; background: #fefce8; }
+            .dictamen-caja h3 { font-size: 15px; margin-top: 0; margin-bottom: 8px; text-transform: uppercase; }
             
             .grid-img { display: flex; justify-content: space-between; gap: 15px; margin-top: 10px; }
             .grid-img div { width: 48%; text-align: center; }
-            /* Límite estricto de altura para que no empuje la firma a la otra página */
             .grid-img img { max-width: 100%; max-height: 220px; border: 2px solid #374151; object-fit: contain; }
             .grid-img p { font-size: 9px; font-weight: bold; background: #e5e7eb; padding: 4px; margin-bottom: 5px; border: 1px solid #9ca3af; }
             
-            .caja-firmas { display: flex; justify-content: space-around; margin-top: 60px; text-align: center; }
+            /* Estilos para los sub-bloques del reporte dinámico */
+            .sub-bloque-narrativo { margin-bottom: 10px; }
+            .sub-bloque-narrativo strong { display: block; font-size: 11px; color: #1f2937; margin-bottom: 2px; text-transform: uppercase; }
+            .sub-bloque-narrativo p { margin: 0; font-size: 11px; line-height: 1.4; color: #374151; }
+
+            .caja-firmas { display: flex; justify-content: space-around; margin-top: 40px; text-align: center; }
             .caja-firmas div { border-top: 2px solid black; width: 220px; padding-top: 5px; font-weight: bold; font-size: 11px; text-transform: uppercase; }
             .caja-firmas span { display: block; font-size: 9px; font-weight: normal; color: #4b5563; margin-top: 2px; }
             
-            @page { margin: 0.8cm; } /* Margen ligeramente reducido */
+            @page { margin: 0.8cm; } 
             body { background-color: white; }
           }
         `}
@@ -171,28 +186,42 @@ const AnalisisView = () => {
           <div className="seccion-inf">
             <h3>I. CADENA DE CUSTODIA Y TRAZABILIDAD</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-              <p><strong>UUID Evidencia:</strong> {result.id || "81696341-7118-4efe-85c4-4d50f011f44e"}</p>
+              <p><strong>UUID Evidencia:</strong> {result.id || "No asignado (Sesión Local)"}</p>
               <p><strong>Algoritmo Core:</strong> Vision Transformer (ViT) v2.0</p>
-              <p><strong>Motor Visual:</strong> XAI OpenCV (Heatmap)</p>
-              <p><strong>Estado Servidor:</strong> CONEXIÓN CIFRADA - VÁLIDA</p>
+              <p><strong>Módulo Analítico:</strong> ELA + Filtro Laplaciano</p>
+              <p><strong>Estado Orquestador:</strong> CONEXIÓN CIFRADA - VÁLIDA</p>
             </div>
           </div>
 
-          <div className={`dictamen-caja ${result.veredicto_final === 'REAL' ? 'real' : ''}`}>
-            <h3 style={{ color: result.veredicto_final === 'FAKE' ? '#b91c1c' : '#15803d' }}>
-              II. DICTAMEN TÉCNICO: [ {result.veredicto_final} ]
+          {/* CAJA DE DICTAMEN DINÁMICO */}
+          <div className={`dictamen-caja ${reporteDinamico ? reporteDinamico.badge.color : (result.veredicto_final === 'REAL' ? 'green' : 'red')}`}>
+            <h3 style={{ color: '#111827' }}>
+              II. DICTAMEN TÉCNICO: [ {reporteDinamico ? reporteDinamico.badge.texto : result.veredicto_final} ]
             </h3>
-            <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '12px' }}><strong>Certeza Matemática Computacional:</strong> {result.confianza_global}%</p>
-            <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '12px', marginTop: '6px', lineHeight: '1.4' }}>
-              <strong>Conclusión Pericial:</strong> El análisis heurístico-óptico y la extracción de matrices de atención han 
-              {result.veredicto_final === 'FAKE' 
-                ? " identificado inconsistencias críticas en la estructura de píxeles, incompatibles con la huella óptica natural de un sensor fotográfico real, sugiriendo manipulación digital por terceros. Nivel de Alerta Legal: CRÍTICO." 
-                : " validado la coherencia física de la luz, sombras y texturas, no encontrando indicios de manipulación artificial en las capas analizadas."}
+            <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '12px', marginBottom: '10px' }}>
+              <strong>Certeza Matemática Computacional:</strong> {result.confianza_global}%
             </p>
+            
+            {reporteDinamico ? (
+              // Renderiza los 3 bloques forenses si la pasarela de datos está activa
+              <div>
+                {reporteDinamico.textos.map((bloque, index) => (
+                  <div key={index} className="sub-bloque-narrativo">
+                    <strong>{bloque.titulo}:</strong>
+                    <p>{bloque.contenido}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // Fallback de seguridad por si falla la conexión de datos crudos
+              <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '11px', lineHeight: '1.4' }}>
+                Conclusión Pericial: El sistema ha finalizado el análisis estructural de píxeles, entregando un veredicto de {result.veredicto_final}. Se recomienda revisión humana cruzada con el mapa de calor adjunto.
+              </p>
+            )}
           </div>
 
           <div style={{ marginTop: '15px' }}>
-            <h3 style={{ borderBottom: '2px solid black', paddingBottom: '3px', fontSize: '13px', fontWeight: 'bold', marginBottom: '10px' }}>III. ANÁLISIS DE IA EXPLICABLE (XAI)</h3>
+            <h3 style={{ borderBottom: '2px solid black', paddingBottom: '3px', fontSize: '13px', fontWeight: 'bold', marginBottom: '10px' }}>III. AUDITORÍA VISUAL (XAI)</h3>
             <div className="grid-img">
               <div>
                 <p>EVIDENCIA ORIGINAL</p>
@@ -200,7 +229,6 @@ const AnalisisView = () => {
               </div>
               <div>
                 <p>MATRIZ DE ATENCIÓN (CAPA BASE)</p>
-                {/* CAMBIO A LA CAPA BASE (HEATMAP NORMAL) */}
                 <img src={result.heatmap_base64 || result.heatmap} alt="Heatmap Base" />
               </div>
             </div>
