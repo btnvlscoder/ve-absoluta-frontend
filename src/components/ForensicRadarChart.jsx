@@ -8,26 +8,20 @@ const ForensicRadarChart = ({ metricas }) => {
   }
 
 const interpretarRadar = (data) => {
-    // Calculamos un "score" de anomalía global en lugar de depender solo de picos altos
+    // Calculamos un score promediado que sea sensible
     const totalAnomalia = data.reduce((acc, m) => acc + m.valor, 0) / data.length;
-    const picosCriticos = data.filter(m => m.valor >= 0.5); // Bajamos el umbral de 0.8 a 0.5
     
-    // Si hay picos claros (>0.5) o el promedio general es inusualmente alto
-    if (picosCriticos.length >= 2 || totalAnomalia > 0.35) {
-      return {
-        severidad: "critico",
-        texto: `Se detectaron desviaciones estructurales significativas. La dispersión en ${picosCriticos[0]?.parametro || 'vectores forenses'} es incompatible con la huella técnica esperada.`
-      };
-    } else if (picosCriticos.length > 0 || totalAnomalia > 0.15) {
-      return {
-        severidad: "sospechoso",
-        texto: `La evidencia presenta irregularidades leves en ${picosCriticos[0]?.parametro || 'la firma digital'}. Puede tratarse de compresión, filtros o manipulación parcial.`
-      };
+    // UMBRALES DE ACCIÓN AJUSTADOS:
+    // 0.0 - 0.08 -> Celeste (Estado de Integridad)
+    // 0.09 - 0.25 -> Naranja (Zona de Sospecha)
+    // > 0.25 -> Rojo (Zona de Alerta Crítica)
+
+    if (totalAnomalia > 0.25) {
+      return { severidad: "critico", texto: "Desviación matemática severa. Se identificaron múltiples vectores anómalos. La dispersión estructural es incompatible con la física de un sensor real." };
+    } else if (totalAnomalia > 0.08) {
+      return { severidad: "sospechoso", texto: "Irregularidades estructurales localizadas. Se detectó actividad inusual consistente con compresión, filtros o alteraciones parciales." };
     } else {
-      return {
-        severidad: "seguro",
-        texto: "Integridad matemática validada. Todos los vectores de ruido y frecuencia convergen dentro de los parámetros esperados."
-      };
+      return { severidad: "seguro", texto: "Integridad matemática validada. Los vectores de frecuencia, ruido y entropía convergen dentro de los parámetros esperados." };
     }
   };
 
