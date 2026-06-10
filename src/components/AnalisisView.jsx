@@ -6,11 +6,18 @@ import ControlPanel from './ControlPanel';
 import ResultsDashboard from './ResultsDashboard';
 import { API_BASE_URL, MAX_FILE_SIZE_BYTES, SERVER_LIMIT_BYTES, formatFileSize, showError } from '../utils/constants';
 
+import { generarNarrativaPericial } from '../utils/interpreteForense';
+
 const AnalisisView = () => {
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Variable para almacenar el reporte dinámico si el resultado existe
+  const reporteDinamico = result && result.datos_crudos_frontend 
+    ? generarNarrativaPericial(result.datos_crudos_frontend) 
+    : null;
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -60,7 +67,10 @@ const AnalisisView = () => {
     }
   };
 
+<<<<<<< HEAD
   // Función que llama a la API del navegador
+=======
+>>>>>>> 6f5df1f8ed525aeacb69fe0c82bc1b4fc49904db
   const generarPDF = () => {
     window.print();
   };
@@ -68,10 +78,73 @@ const AnalisisView = () => {
   return (
     <div className="app-container">
       
+<<<<<<< HEAD
       {/* =========================================================
           1. VISTA WEB NORMAL (Se oculta al imprimir con print:hidden)
           ========================================================= */}
       <div className="app-content print:hidden">
+=======
+      <style>
+        {`
+          @media screen {
+            .informe-pericial-secreto {
+              display: none !important;
+            }
+          }
+
+          @media print {
+            .vista-app-normal {
+              display: none !important;
+            }
+            
+            .informe-pericial-secreto {
+              display: block !important;
+              width: 100% !important;
+              background: white !important;
+              color: black !important;
+              font-family: Arial, sans-serif !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+
+            .informe-header { border-bottom: 3px solid #1f2937; padding-bottom: 5px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
+            .informe-header h1 { font-size: 22px; font-weight: bold; text-transform: uppercase; margin: 0; }
+            .informe-header h2 { font-size: 13px; color: #4b5563; margin: 3px 0 0 0; }
+            
+            .seccion-inf { background: #f3f4f6; padding: 10px 15px; border: 1px solid #d1d5db; margin-bottom: 15px; border-radius: 4px; }
+            .seccion-inf h3 { font-size: 13px; font-weight: bold; border-bottom: 1px solid #9ca3af; padding-bottom: 5px; margin-top: 0; margin-bottom: 8px; }
+            .seccion-inf p { font-size: 11px; margin: 4px 0; font-family: monospace; }
+            
+            /* Clases Dinámicas para la Caja de Dictamen */
+            .dictamen-caja { border-left: 8px solid #9ca3af; background: #f3f4f6; padding: 12px 15px; margin-bottom: 15px; }
+            .dictamen-caja.red { border-left-color: #dc2626; background: #fef2f2; }
+            .dictamen-caja.green { border-left-color: #16a34a; background: #f0fdf4; }
+            .dictamen-caja.orange { border-left-color: #ea580c; background: #fff7ed; }
+            .dictamen-caja.yellow { border-left-color: #ca8a04; background: #fefce8; }
+            .dictamen-caja h3 { font-size: 15px; margin-top: 0; margin-bottom: 8px; text-transform: uppercase; }
+            
+            .grid-img { display: flex; justify-content: space-between; gap: 15px; margin-top: 10px; }
+            .grid-img div { width: 48%; text-align: center; }
+            .grid-img img { max-width: 100%; max-height: 220px; border: 2px solid #374151; object-fit: contain; }
+            .grid-img p { font-size: 9px; font-weight: bold; background: #e5e7eb; padding: 4px; margin-bottom: 5px; border: 1px solid #9ca3af; }
+            
+            /* Estilos para los sub-bloques del reporte dinámico */
+            .sub-bloque-narrativo { margin-bottom: 10px; }
+            .sub-bloque-narrativo strong { display: block; font-size: 11px; color: #1f2937; margin-bottom: 2px; text-transform: uppercase; }
+            .sub-bloque-narrativo p { margin: 0; font-size: 11px; line-height: 1.4; color: #374151; }
+
+            .caja-firmas { display: flex; justify-content: space-around; margin-top: 40px; text-align: center; }
+            .caja-firmas div { border-top: 2px solid black; width: 220px; padding-top: 5px; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+            .caja-firmas span { display: block; font-size: 9px; font-weight: normal; color: #4b5563; margin-top: 2px; }
+            
+            @page { margin: 0.8cm; } 
+            body { background-color: white; }
+          }
+        `}
+      </style>
+
+      <div className="app-content vista-app-normal">
+>>>>>>> 6f5df1f8ed525aeacb69fe0c82bc1b4fc49904db
         <Header />
         <ControlPanel 
           onFileChange={handleFileChange} 
@@ -85,11 +158,27 @@ const AnalisisView = () => {
               result={result} 
               imagePreview={imagePreview} 
             />
+<<<<<<< HEAD
             {/* BOTÓN PARA GENERAR EL PDF PERICIAL */}
             <div className="flex justify-center mt-6 mb-10">
               <button 
                 onClick={generarPDF}
                 className="px-8 py-3 bg-blue-800 text-white font-bold rounded shadow-lg hover:bg-blue-900 transition-colors border border-blue-950"
+=======
+            <div style={{ textAlign: 'center', marginTop: '20px', marginBottom: '30px' }}>
+              <button 
+                onClick={generarPDF}
+                style={{ 
+                  padding: '12px 24px', 
+                  backgroundColor: '#1e3a8a', 
+                  color: 'white', 
+                  fontWeight: 'bold', 
+                  border: 'none', 
+                  borderRadius: '5px', 
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                }}
+>>>>>>> 6f5df1f8ed525aeacb69fe0c82bc1b4fc49904db
               >
                 📄 Descargar Informe Pericial (PDF)
               </button>
@@ -98,6 +187,7 @@ const AnalisisView = () => {
         )}
       </div>
 
+<<<<<<< HEAD
       {/* ==============================================================
           2. PLANTILLA DEL INFORME PERICIAL (SOLO VISIBLE EN EL PDF)
           ============================================================== */}
@@ -158,10 +248,75 @@ const AnalisisView = () => {
                 <p className="text-xs font-bold bg-gray-200 py-1 mb-2 border border-gray-400">MATRIZ DE ATENCIÓN (THRESHOLD JET)</p>
                 {/* Cargamos el heatmap que viene desde Spring Boot */}
                 <img src={result.heatmap_threshold || result.heatmap_base64} alt="Heatmap" className="w-full border-2 border-gray-800 shadow-sm object-contain max-h-64" />
+=======
+      {result && (
+        <div className="informe-pericial-secreto">
+          
+          <div className="informe-header">
+            <div>
+              <h1>Reporte Pericial Forense</h1>
+              <h2>Análisis de Integridad Óptica y Redes Neuronales</h2>
+              <h3 style={{ fontSize: '10px', color: '#1e3a8a', marginTop: '4px', marginBottom: '0' }}>SISTEMA VE ABSOLUTA v2.0</h3>
+            </div>
+            <div style={{ textAlign: 'right', fontSize: '10px' }}>
+              <p style={{ margin: '2px 0' }}><strong>Fecha de Emisión:</strong> {new Date().toLocaleString('es-CL')}</p>
+              <p style={{ margin: '2px 0' }}><strong>Solicitante:</strong> Ministerio Público - Chile</p>
+            </div>
+          </div>
+
+          <div className="seccion-inf">
+            <h3>I. CADENA DE CUSTODIA Y TRAZABILIDAD</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+              <p><strong>UUID Evidencia:</strong> {result.id || "No asignado (Sesión Local)"}</p>
+              <p><strong>Algoritmo Core:</strong> Vision Transformer (ViT) v2.0</p>
+              <p><strong>Módulo Analítico:</strong> ELA + Filtro Laplaciano</p>
+              <p><strong>Estado Orquestador:</strong> CONEXIÓN CIFRADA - VÁLIDA</p>
+            </div>
+          </div>
+
+          {/* CAJA DE DICTAMEN DINÁMICO */}
+          <div className={`dictamen-caja ${reporteDinamico ? reporteDinamico.badge.color : (result.veredicto_final === 'REAL' ? 'green' : 'red')}`}>
+            <h3 style={{ color: '#111827' }}>
+              II. DICTAMEN TÉCNICO: [ {reporteDinamico ? reporteDinamico.badge.texto : result.veredicto_final} ]
+            </h3>
+            <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '12px', marginBottom: '10px' }}>
+              <strong>Certeza Matemática Computacional:</strong> {result.confianza_global}%
+            </p>
+            
+            {reporteDinamico ? (
+              // Renderiza los 3 bloques forenses si la pasarela de datos está activa
+              <div>
+                {reporteDinamico.textos.map((bloque, index) => (
+                  <div key={index} className="sub-bloque-narrativo">
+                    <strong>{bloque.titulo}:</strong>
+                    <p>{bloque.contenido}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // Fallback de seguridad por si falla la conexión de datos crudos
+              <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '11px', lineHeight: '1.4' }}>
+                Conclusión Pericial: El sistema ha finalizado el análisis estructural de píxeles, entregando un veredicto de {result.veredicto_final}. Se recomienda revisión humana cruzada con el mapa de calor adjunto.
+              </p>
+            )}
+          </div>
+
+          <div style={{ marginTop: '15px' }}>
+            <h3 style={{ borderBottom: '2px solid black', paddingBottom: '3px', fontSize: '13px', fontWeight: 'bold', marginBottom: '10px' }}>III. AUDITORÍA VISUAL (XAI)</h3>
+            <div className="grid-img">
+              <div>
+                <p>EVIDENCIA ORIGINAL</p>
+                <img src={imagePreview} alt="Original" />
+              </div>
+              <div>
+                <p>MATRIZ DE ATENCIÓN (CAPA BASE)</p>
+                <img src={result.heatmap_base64 || result.heatmap} alt="Heatmap Base" />
+>>>>>>> 6f5df1f8ed525aeacb69fe0c82bc1b4fc49904db
               </div>
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Firmas Legales */}
           <div className="mt-24 pt-8 flex justify-around text-center">
             <div>
@@ -171,6 +326,16 @@ const AnalisisView = () => {
             <div>
               <p className="border-t-2 border-black w-48 mx-auto pt-2 font-bold uppercase text-sm">Timbre Institucional</p>
               <p className="text-xs mt-1 text-gray-600">Validación del Sistema Judicial</p>
+=======
+          <div className="caja-firmas">
+            <div>
+              Firma Perito Informático
+              <span>Brigada Investigadora del Cibercrimen PDI</span>
+            </div>
+            <div>
+              Timbre Institucional
+              <span>Validación del Sistema Judicial</span>
+>>>>>>> 6f5df1f8ed525aeacb69fe0c82bc1b4fc49904db
             </div>
           </div>
 
