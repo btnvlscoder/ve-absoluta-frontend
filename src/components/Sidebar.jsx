@@ -30,7 +30,7 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="sidebar-header">
         <img 
-          src="/LOGO.png" 
+          src="/logo2.png" 
           alt="Logo VE ABSOLUTA"
           width={32}
           height={32} 
