@@ -29,7 +29,13 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <ShieldAlert size={32} className="logo-icon" />
+        <img 
+          src="/LOGO.png" 
+          alt="Logo VE ABSOLUTA"
+          width={32}
+          height={32} 
+          className="logo-icon" 
+        />
         <h2>VE ABSOLUTA</h2>
       </div>
       
