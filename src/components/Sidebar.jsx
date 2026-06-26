@@ -34,7 +34,7 @@ const Sidebar = () => {
           alt="Logo VE ABSOLUTA"
           width={32}
           height={32} 
-          border-radius={16}
+          style={{ borderRadius: '20%' }}
         />
         <h2>VE ABSOLUTA</h2>
       </div>
